@@ -243,11 +243,11 @@
                               </div>
                             </div>
                             <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="date">Tanggal</label>
+                              <label class="col-sm-4 col-form-label" for="tanggal-check-in">Tanggal</label>
                               <div class="col-sm-8">
                                   <input type="text" 
-                                    id="date"
-                                    name="date"
+                                    id="tanggal-check-in"
+                                    name="tanggal-check-in"
                                     class="form-control"
                                     readonly
                                   >
@@ -508,6 +508,15 @@
         
           $(document).ready(function(){
             // we call the function
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1); //January is 0!
+            var yyyy = today.getFullYear();
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+              "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+            today = dd + ' ' + monthNames[mm] + ' ' + yyyy;
+            document.getElementById('tanggal-check-in').value = today;
             getApiLocationAddress();
           });
 
