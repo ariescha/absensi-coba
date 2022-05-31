@@ -3,7 +3,7 @@
 $server = "localhost";
 $user = "root";
 $password = "";
-$nama_database = "absensi_jmto_coba";
+$nama_database = "demo_jmto_hrd";
 
 $db = mysqli_connect($server, $user, $password, $nama_database);
 

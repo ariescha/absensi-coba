@@ -220,7 +220,7 @@
                         <div class="card-body">
                           <h4 class="card-title text-primary">Check In Kehadiran</h4>
                           <?php 
-                                $sql = "SELECT * FROM karyawan WHERE npp = 'JET00024'";
+                                $sql = "SELECT * FROM karyawan WHERE nik   = '152701'";
                                 $query = mysqli_query($db, $sql); 
                                 $karyawan = mysqli_fetch_array($query)
                           ?>
@@ -232,7 +232,7 @@
                                     id="nama_lengkap_karyawan"
                                     name="nama_lengkap_karyawan"
                                     class="form-control" 
-                                    value="<?php echo $karyawan['nama_lengkap_karyawan']?>"
+                                    value="<?php echo $karyawan['name']?>"
                                     readonly
                                   >
                               </div>
@@ -244,7 +244,7 @@
                                     id="nik_karyawan"
                                     name="nik_karyawan"
                                     class="form-control" 
-                                    value="<?php echo $karyawan['npp']?>"
+                                    value="<?php echo $karyawan['nik']?>"
                                     readonly required
                                   >
                               </div>

@@ -1,5 +1,10 @@
 <?php 
-	include "config.php"; ?>
+	  include_once("config/config.php");
+    session_start();
+
+    $namalengkap = $_SESSION['namalengkap'];	
+    $nik = $_SESSION['niklogin'];
+    ?>
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -119,7 +124,7 @@
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-semibold d-block">Al</span>
+                            <span class="fw-semibold d-block"><?php echo $namalengkap ?></span>
                             <small class="text-muted">Karyawan</small>
                           </div>
                         </div>
@@ -129,9 +134,9 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
+                      <a class="dropdown-item" href="../../mainmenu.php">
+                        <i class="bx bx-exit me-2"></i>
+                        <span class="align-middle">Kembali ke Main Menu</span>
                       </a>
                     </li>
                   </ul>
@@ -219,11 +224,7 @@
                       <div class="col-sm-8">
                         <div class="card-body">
                           <h4 class="card-title text-primary">Check In Kehadiran</h4>
-                          <?php 
-                                $sql = "SELECT * FROM karyawan WHERE npp = 'JET00024'";
-                                $query = mysqli_query($db, $sql); 
-                                $karyawan = mysqli_fetch_array($query)
-                          ?>
+                          
                           <form id="form-check-in" action="proses-check-in.php" method="POST">
                           <div class="row mb-3">
                               <label class="col-sm-4 col-form-label" for="nama_lengkap_karyawan">Nama Lengkap</label>
@@ -232,7 +233,7 @@
                                     id="nama_lengkap_karyawan"
                                     name="nama_lengkap_karyawan"
                                     class="form-control" 
-                                    value="<?php echo $karyawan['nama_lengkap_karyawan']?>"
+                                    value="<?php echo $namalengkap?>"
                                     readonly
                                   >
                               </div>
@@ -244,7 +245,7 @@
                                     id="nik_karyawan"
                                     name="nik_karyawan"
                                     class="form-control" 
-                                    value="<?php echo $karyawan['npp']?>"
+                                    value="<?php echo $nik?>"
                                     readonly required
                                   >
                               </div>
