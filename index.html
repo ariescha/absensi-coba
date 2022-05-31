@@ -1,3 +1,5 @@
+<?php 
+	include "config.php"; ?>
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -26,7 +28,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Absensi Karyawan</title>
+    <title>Absensi Karyawan JMTO</title>
 
     <meta name="description" content="" />
 
@@ -63,7 +65,7 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="assets/js/config.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
     <script src="html5-qrcode.min.js"></script>
 
   </head>
@@ -210,14 +212,19 @@
                   </div>
                   </div>
                 </div>
-              <div class="row"  id="form-check-in">
+              <div class="row"  id="card-check-in">
                 <div class="col-lg-12 mb-4 order-0">
                   <div class="card" style="display:show">
                     <div class="d-flex align-items-end row">
                       <div class="col-sm-8">
                         <div class="card-body">
                           <h4 class="card-title text-primary">Check In Kehadiran</h4>
-                          <form>
+                          <?php 
+                                $sql = "SELECT * FROM karyawan WHERE npp = 'JET00024'";
+                                $query = mysqli_query($db, $sql); 
+                                $karyawan = mysqli_fetch_array($query)
+                          ?>
+                          <form id="form-check-in" action="proses-check-in.php" method="POST">
                           <div class="row mb-3">
                               <label class="col-sm-4 col-form-label" for="nama_lengkap_karyawan">Nama Lengkap</label>
                               <div class="col-sm-8">
@@ -225,7 +232,7 @@
                                     id="nama_lengkap_karyawan"
                                     name="nama_lengkap_karyawan"
                                     class="form-control" 
-                                    value="Alben Ricardo Hutabarat"
+                                    value="<?php echo $karyawan['nama_lengkap_karyawan']?>"
                                     readonly
                                   >
                               </div>
@@ -237,26 +244,35 @@
                                     id="nik_karyawan"
                                     name="nik_karyawan"
                                     class="form-control" 
-                                    value="JET00024"
-                                    readonly
+                                    value="<?php echo $karyawan['npp']?>"
+                                    readonly required
                                   >
                               </div>
                             </div>
                             <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="date">Tanggal</label>
+                              <label class="col-sm-4 col-form-label" for="tanggal-check-in">Tanggal</label>
                               <div class="col-sm-8">
                                   <input type="text" 
-                                    id="date"
-                                    name="date"
+                                    id="tanggal-check-in"
+                                    name="tanggal-check-in"
                                     class="form-control"
                                     readonly
                                   >
                               </div>
                             </div>
                             <div class="row mb-3">
+                              <label class="col-sm-4 col-form-label" for="basic-default-name">Operasional/Non-Operasional</label>
+                              <div class="col-sm-8" onclick="check_display_operasional()" required>
+                                <input type="radio" id="operasional" name="jenis_operasional" value="Operasional">
+                                <label for="operasional">Operasional</label><br>
+                                <input type="radio" id="non-operasional" name="jenis_operasional" value="Non Operasional">
+                                <label for="non-operasional">Non Operasional</label><br>
+                              </div>
+                            </div>
+                            <div class="row mb-3" id="display_shift">
                               <label class="col-sm-4 col-form-label" for="basic-default-name">Jadwal Shift</label>
                               <div class="col-sm-8">
-                                <select class="form-control">
+                                <select class="form-control" id="jadwal_shift" name="jadwal_shift" required>
                                   <option value="" selected>Pilih Shift</option>
                                   <option value="Shift 1">Shift 1</option>
                                   <option value="Shift 2">Shift 2</option>
@@ -264,22 +280,85 @@
                                 </select>
                               </div>
                             </div>
+                            <div class="row mb-3" id="display_wfo_wfh">
+                              <label class="col-sm-4 col-form-label" for="basic-default-name">WFO/WFH</label>
+                              <div class="col-sm-8">
+                              <input type="radio" id="wfo" name="wfo_wfh" value="wfo">
+                              <label for="wfo">WFO</label><br>
+                              <input type="radio" id="wfh" name="wfo_wfh" value="wfh">
+                              <label for="wfh">WFH</label>
+                              </div>
+                            </div>
                             <div class="row mb-3">
                               <label class="col-sm-4 col-form-label" for="basic-default-company">Lokasi</label>
                               <div class="col-sm-8">
                                 <textarea
                                   class="form-control"
-                                  id="lokasi"
-                                  name="lokasi"
-                                  readonly
+                                  id="lokasi_perangkat"
+                                  name="lokasi_perangkat"
+                                  readonly required
                                 ></textarea>
                               </div>
                             </div>
+                            <div class="row mb-3" style="display:none">
+                              <label class="col-sm-4 col-form-label" for="nama_kantor">Lokasi Kantor</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="nama_kantor"
+                                    name="nama_kantor"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                            </div>
+
+                            <!-- <div class="row mb-3">
+                              <label class="col-sm-4 col-form-label" for="lat_kantor">Latitude Lokasi Kerja</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="lat_kantor"
+                                    name="lat_kantor"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                              <div class="row mb-3">
+                              <label class="col-sm-4 col-form-label" for="long_kantor">Longitude Lokasi Kerja</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="long_kantor"
+                                    name="long_kantor"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                            </div>
+                            <div class="row mb-3">
+                              <label class="col-sm-4 col-form-label" for="lat_perangkat">Latitude Perangkat</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="lat_perangkat"
+                                    name="lat_perangkat"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                              <div class="row mb-3">
+                              <label class="col-sm-4 col-form-label" for="long_perangkat">Longitude Perangkat</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="long_perangkat"
+                                    name="long_perangkat"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                            </div> -->
                             <div class="row justify-content-end">
                               <div class="col-sm-10">
                               </div>
                               <div class="col-sm-3">
-                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-check-in">Check In</button>
+                                <button type="button" class="btn btn-sm btn-primary" onclick="check_in_check()">Check In</button>
                               </div>
                             </div>
                           </form>
@@ -352,17 +431,7 @@
                       </div>
                         <div class="modal-body">
                           <div style="width: 500px" id="qr-reader"></div>
-                          <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="basic-default-company">Nama Kantor</label>
-                              <div class="col-sm-8">
-                                <input type="text"
-                                  class="form-control"
-                                  id="nama-kantor"
-                                  name="nama-kantor"
-                                  readonly
-                                >
-                              </div>
-                            </div>
+                         
                           </div>
                         </div>
                     </div>
@@ -451,6 +520,48 @@
         //API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
           const Http = new XMLHttpRequest();
 
+          function check_display_operasional(){
+            if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
+              //Karyawan Operasional, menampilkan radio button shift
+              document.getElementById('display_wfo_wfh').style = "display:none";
+              document.getElementById('display_shift').style = "display:show";
+              document.getElementById('display_wfo_wfh').required = false;
+              document.getElementById('display_shift').required = true;
+
+            }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
+              //Karyawan Non Operasional, menampilkan radio button wfo/wfh
+              document.getElementById('display_wfo_wfh').style = "display:show";
+              document.getElementById('display_shift').style = "display:none";
+              document.getElementById('display_wfo_wfh').required = true;
+              document.getElementById('display_shift').required = false;
+            }
+          }
+          
+          function check_in_check(){
+            if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
+              //Karyawan operasional, munculin modal scanner
+              if(document.getElementById('jadwal_shift').value !== ""){
+                  $('#modal-check-in').modal('show'); 
+                }else{
+                  alert('Mohon isi jadwal shift anda!')
+                }
+            }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
+              if(document.getElementById('wfo').checked == true && document.getElementById('wfh').checked == false ){
+                //Karyawan non operasional wfo, munculin modal scanner
+                
+                  $('#modal-check-in').modal('show'); 
+                
+              }
+              else if(document.getElementById('wfo').checked == false && document.getElementById('wfh').checked == true ){
+                //Karyawan non operasional wfH, langsung submit form
+                console.log('form-check-in-submit');
+                document.getElementById('form-check-in').submit();
+              }
+            
+            }else{
+              alert('Mohon isi status karyawan operasional/non');
+            }
+          }
         function getApiLocationAddress(currentPosition) {
           //URL API
           var bdcApi = "https://api.bigdatacloud.net/data/reverse-geocode-client";
@@ -462,6 +573,9 @@
                     + "&longitude=" + position.coords.longitude
                     + "&localityLanguage=id";
                     getApi(bdcApi);
+                    
+              // document.getElementById('lat_perangkat').value = currentPosition.coords.latitude;
+              // document.getElementById('long_perangkat').value = currentPosition.coords.longitude;
 
             },
             (err) => { getApi(bdcApi); },
@@ -470,8 +584,6 @@
                 timeout: 5000,
                 maximumAge: 0
             });
-            
-            
 
           //PROCESS GET API
             function getApi(bdcApi) {
@@ -498,9 +610,7 @@
                       var arrayAddressFinal = arraymove(arrayAddress, 0, 1);
 
               //return to view
-              document.getElementById('lokasi').innerHTML = arrayAddressFinal.join(", ");
-              //document.getElementById('result-lat-device').value = currentPosition.coords.latitude;
-              //document.getElementById('result-long-device').value = currentPosition.coords.longitude;
+              document.getElementById('lokasi_perangkat').innerHTML = arrayAddressFinal.join(", ");
                   }
               };
             }
@@ -508,10 +618,25 @@
         
           $(document).ready(function(){
             // we call the function
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1); //January is 0!
+            var yyyy = today.getFullYear();
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+              "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+            today = dd + ' ' + monthNames[mm] + ' ' + yyyy;
+            document.getElementById('tanggal-check-in').value = today;
+
             getApiLocationAddress();
+
+            document.getElementById('display_wfo_wfh').style = "display:none";
+            document.getElementById('display_shift').style = "display:none";
+            
+            
           });
 
-      
+        
         //FUNCTION CALCULATE DISTANCE DEVICE AND QR (SELISIH)
         function calculateDistance(currentPosition, strDecodedText){
           let lat1 = currentPosition.coords.latitude;
@@ -524,6 +649,11 @@
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var resultFinal = radius * c; // Distance in km
           //document.getElementById('selisih').value = resultFinal;
+          if(resultFinal <= 2){
+            document.getElementById('form-check-in').submit();
+          }else{
+            alert('Lokasi anda terlalu jauh dari kantor');
+          }
         }
         function deg2rad(deg) {
           return deg * (Math.PI/180)
@@ -541,9 +671,9 @@
             //SPLIT RESULT READ QR
             let strDecodedText = decodedText;
             strDecodedText = strDecodedText.split(";");
-            // document.getElementById('lat-qr').value = strDecodedText[0];
-            // document.getElementById('long-qr').value = strDecodedText[1];
-            document.getElementById('nama-kantor').value = strDecodedText[2];
+            // document.getElementById('lat_kantor').value = strDecodedText[0];
+            // document.getElementById('long_kantor').value = strDecodedText[1];
+            document.getElementById('nama_kantor').value = strDecodedText[2];
             //CALCULATE DISTANCE DEVICE WITH QR (SELISIH)
             calculateDistance(currentPosition, strDecodedText);
 
