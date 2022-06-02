@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 
 $server = "localhost";
 $user = "root";
@@ -13,4 +13,4 @@ if( !$db ){
     echo "Success connect DB";
 }
 
-?>
+?> -->

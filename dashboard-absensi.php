@@ -1,5 +1,8 @@
 <?php 
-	  include_once("config/config.php");
+	  // include_once("config/config.php");
+    include_once("../../config/config.php");
+    include_once("../../config/fungsi_indotgl.php");  
+    include_once("../../library/buildquery.php");
     session_start();
 
     $namalengkap = $_SESSION['namalengkap'];	
@@ -166,7 +169,7 @@
                             <i class="bx bx-map bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> Jl. Dukuh RW 05, Kramatjati, Jakarta Timur, DKI Jakarta, Indonesia</span>
 <br>
                             <span id="notif-status-nda"></span><br>
-                          <a href="javascript:;" id="button-check-out" class="btn btn-sm btn-primary">Check Out</a>
+                          <a href="proses-check-out.php" id="button-check-out" class="btn btn-sm btn-primary">Check Out</a>
                         </div>
                       </div>
                       <div class="col-sm-2 text-center text-sm-left">
@@ -313,48 +316,6 @@
                               </div>
                             </div>
 
-                            <!-- <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="lat_kantor">Latitude Lokasi Kerja</label>
-                              <div class="col-sm-8">
-                                  <input type="text" 
-                                    id="lat_kantor"
-                                    name="lat_kantor"
-                                    class="form-control"
-                                    readonly
-                                  >
-                              </div>
-                              <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="long_kantor">Longitude Lokasi Kerja</label>
-                              <div class="col-sm-8">
-                                  <input type="text" 
-                                    id="long_kantor"
-                                    name="long_kantor"
-                                    class="form-control"
-                                    readonly
-                                  >
-                              </div>
-                            </div>
-                            <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="lat_perangkat">Latitude Perangkat</label>
-                              <div class="col-sm-8">
-                                  <input type="text" 
-                                    id="lat_perangkat"
-                                    name="lat_perangkat"
-                                    class="form-control"
-                                    readonly
-                                  >
-                              </div>
-                              <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="long_perangkat">Longitude Perangkat</label>
-                              <div class="col-sm-8">
-                                  <input type="text" 
-                                    id="long_perangkat"
-                                    name="long_perangkat"
-                                    class="form-control"
-                                    readonly
-                                  >
-                              </div>
-                            </div> -->
                             <div class="row justify-content-end">
                               <div class="col-sm-10">
                               </div>
@@ -398,22 +359,42 @@
                     <tr style="text-align:center">
                       <th>No</th>
                       <th>Tanggal Kehadiran</th>
-                      <th>Lokasi</th>
+                      <th>Lokasi Kerja</th>
                       <th>Jadwal Shift</th>
                       <th>Waktu Check In</th>
                       <th>Waktu Check Out</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
-                    <tr style="text-align:center"> 
-                      <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>1</strong></td>
-                      <td>19-04-2022</td>
-                      <td>Dukuh V, KramatJati, Jakarta Timur, DKI Jakarta, Indonesia</td>
-                      <td>Shift 1</td>
-                      <td><span class="badge bg-label-primary me-1">07:59:20 WIB</span></td>
-                      <td><span class="badge bg-label-danger me-1">17:30:14 WIB</span></td>
+                    <?php
+                    $sqlTableAbsensi = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 7");
+                    
+                    $counter = 1;
+                    // $dataTableAbsensiForOther = mysqli_fetch_array($sqlTableAbsensi);
+                    while ($dataTableAbsensi = mysqli_fetch_array($sqlTableAbsensi)){
+
+                      echo "<tr style='text-align:center'>";
+
+                        echo "<td><i class='fab fa-angular fa-lg text-danger me-3'></i> <strong>".$counter."</strong></td>";
+                        echo "<td>".$dataTableAbsensi['tgl_absence']."</td>";
+                        echo "<td>".$dataTableAbsensi['lokasi_kerja']."</td>";
+                        echo "<td>".$dataTableAbsensi['shift']."</td>";
+                        echo "<td><span class='badge bg-label-primary me-1'>".$dataTableAbsensi['checkin_time']." WIB</span></td>";
+                        echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['checkout_time']." WIB</span></td>";
                       
-                    </tr>
+                        $statusCheckin = $dataTableAbsensi['status_checkin'];
+                        if ($statusCheckin==1){
+                          echo "<td>Sudah checkout</td>";
+                        }else{
+                          echo "<td>Masih checkin</td>";
+                        }
+
+                      echo "</tr>";
+                      $counter = $counter+1;
+                      
+                    }                    
+                    ?>
                     
                   </tbody>
                 </table>
@@ -650,7 +631,7 @@
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var resultFinal = radius * c; // Distance in km
           //document.getElementById('selisih').value = resultFinal;
-          if(resultFinal <= 2){
+          if(resultFinal <= 100){
             document.getElementById('form-check-in').submit();
           }else{
             alert('Lokasi anda terlalu jauh dari kantor');
