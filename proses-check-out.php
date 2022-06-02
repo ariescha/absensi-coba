@@ -19,7 +19,7 @@
     $absensiId = $dataTableAbsensiLast['absensi_id'];
 
     if ($dataTableAbsensiLast['status_checkin']==1){
-        header("location: /mydata/modul/checkin_dev/dashboard-absensi.php");
+        header("location: /mydata/modul/absensi-dev/dashboard-absensi.php");
     }else{
         date_default_timezone_set("Asia/Bangkok");
         $checkoutLocation = null;
@@ -28,6 +28,6 @@
         $query = "UPDATE absensi_checkin SET checkout_location='$checkoutLocation', checkout_time='$checkoutTime', status_checkin=1 WHERE absensi_id='$absensiId'";
 
         $ex = mysql_query($query);
-        header("location: /mydata/modul/checkin_dev/dashboard-absensi.php");
+        header("location: /mydata/modul/absensi-dev/dashboard-absensi.php");
     }
 ?>

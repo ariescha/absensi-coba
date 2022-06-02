@@ -1,8 +1,5 @@
 <?php 
-	  // include_once("config/config.php");
-    include_once("../../config/config.php");
-    include_once("../../config/fungsi_indotgl.php");  
-    include_once("../../library/buildquery.php");
+	  include_once("config/config.php");
     session_start();
 
     $namalengkap = $_SESSION['namalengkap'];	
@@ -68,6 +65,8 @@
 
     <!-- Helpers -->
     <script src="assets/vendor/js/helpers.js"></script>
+    <script src="assets/js/qrcode.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
@@ -75,8 +74,6 @@
     <script src="assets/js/config.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
     <script src="html5-qrcode.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="../../assets/sweetalert/sweetalert2.css" />  
-    <script type="text/javascript" src="../../assets/sweetalert/sweetalert2.js"></script>  
 
   </head>
 <body>
@@ -156,200 +153,83 @@
           <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row"  id="rejected-check-in">
+             
+              <div class="row"  id="card-qrcode-generator">
                 <div class="col-lg-12 mb-4 order-0">
-                  <div class="card">
+                  <div class="card" style="display:show">
                     <div class="d-flex align-items-end row">
                       <div class="col-sm-8">
                         <div class="card-body">
-                          <h4 class="card-title text-primary">Check In Gagal ⛔</h4>
-                            <p class="mb-4">
-                            Lokasi anda terlalu jauh dari kantor. Mohon mendekat dan coba lagi.
-                            </p>
-                          <a href="javascript:;" id="button-check-out" class="btn btn-sm btn-primary">Check In</a>
-
-                          <!-- <a href="javascript:;" class="btn btn-sm btn-primary" onclick="checkout()">Check Out</a> -->
-                        </div>
-                      </div>
-                      
-                      <div class="col-sm-2 text-center text-sm-left">
-                        <div class="card-body pb-0 px-0 px-md-4">
-                          <img
-                            src="assets/img/illustrations/sorry.png"
-                            height="200"
-                            alt="View Badge User"
-                            data-app-dark-img="illustrations/sorry.png"
-                            data-app-light-img="illustrations/sorry.png"
-                          />
-                        </div>
-                      </div>
-                      
-                    </div>
-                  </div>
-                  </div>
-                </div>
-
-                <?php
-                  $sqlTableAbsensiCard = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 1");
-                  $dataTableAbsensiCard = mysqli_fetch_array($sqlTableAbsensiCard);
-                  // print_r($dataTableAbsensiLast);
-                    $tanggalAbsenCard =  $dataTableAbsensiCard['tgl_absence'];
-                    $checkinTimeCard = $dataTableAbsensiCard['checkin_time'];
-                    $checkinLocationCard = $dataTableAbsensiCard['checkin_location'];
-                ?>
-              <div class="row"  id="checked-in">
-                <div class="col-lg-12 mb-4 order-0">    
-                  <div class="card">
-                    <div class="d-flex align-items-end row">
-                      <div class="col-sm-8">
-                        <div class="card-body">
-                          <h4 class="card-title text-primary">Checked In! ✅</h4>
-                            <p class="mb-4">
-                              Kamu telah berhasil check in dengan detil berikut! Jangan lupa untuk selalu terapkan AKHLAK dalam bekerja 🔥🔥🔥
-                            </p>
-                            <i class="bx bx-time bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $tanggalAbsenCard ?>, <?php echo $checkinTimeCard ?> WIB</span> <br>
-                            <i class="bx bx-map bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $checkinLocationCard ?></span><br>
-                            <span id="notif-status-nda"></span><br>
-                          <button id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
-                        </div>
-                      </div>
-                      <div class="col-sm-2 text-center text-sm-left">
-                        <div class="card-body pb-0 px-0 px-md-4">
-                          <img
-                            src="assets/img/illustrations/company-life-jmto.png"
-                            height="200"
-                            alt="View Badge User"
-                            data-app-dark-img="illustrations/company-life-jmto.png"
-                            data-app-light-img="illustrations/company-life-jmto.png"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
-                  </div>
-              
-                  
-
-              <div class="row"  id="card-check-in">
-                <div class="col-lg-12 mb-4 order-0">
-                  <div class="card">
-                    <div class="d-flex align-items-end row">
-                      <div class="col-sm-8">
-                        <div class="card-body">
-                          <h4 class="card-title text-primary">Check In Kehadiran</h4>
+                          <h4 class="card-title text-primary">Data QR Code</h4>
                           
-                          <form id="form-check-in" action="proses-check-in.php" method="POST">
+                          <form id="form-check-in" action="proses-qrcode.php" method="POST">
                           <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="nama_lengkap_karyawan">Nama Lengkap</label>
+                              <label class="col-sm-4 col-form-label" for="nama_lokasi">Lokasi Absensi</label>
                               <div class="col-sm-8">
                                   <input type="text" 
-                                    id="nama_lengkap_karyawan"
-                                    name="nama_lengkap_karyawan"
+                                    id="nama_lokasi"
+                                    name="nama_lokasi"
                                     class="form-control" 
-                                    value="<?php echo $namalengkap?>"
-                                    readonly
+                                    placeholder="Isikan nama lokasi absensi" 
+                                    required
                                   >
                               </div>
                             </div>
                             <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="nik_karyawan">NIK</label>
+                              <label class="col-sm-4 col-form-label" for="longitude">Longitude</label>
                               <div class="col-sm-8">
                                   <input type="text"
-                                    id="nik_karyawan"
-                                    name="nik_karyawan"
+                                    id="longitude"
+                                    name="longitude"
                                     class="form-control" 
-                                    value="<?php echo $nik?>"
-                                    readonly required
+                                    placeholder="Isikan longitude lokasi"
+                                    required
                                   >
                               </div>
                             </div>
                             <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="tanggal-check-in">Tanggal</label>
+                              <label class="col-sm-4 col-form-label" for="latitude">Latitude</label>
                               <div class="col-sm-8">
                                   <input type="text" 
-                                    id="tanggal-check-in"
-                                    name="tanggal-check-in"
+                                    id="latitude"
+                                    name="latitude"
                                     class="form-control"
-                                    readonly
+                                    placeholder="Isikan latitude lokasi"
+                                    required
                                   >
                               </div>
                             </div>
-                            <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="basic-default-name">Operasional/Non-Operasional</label>
-                              <div class="col-sm-8" onclick="check_display_operasional()" required>
-                                <input type="radio" id="operasional" name="jenis_operasional" value="Operasional">
-                                <label for="operasional">Operasional</label><br>
-                                <input type="radio" id="non-operasional" name="jenis_operasional" value="Non Operasional">
-                                <label for="non-operasional">Non Operasional</label><br>
-                              </div>
+                            <div class="row mb-3" style="display:none" id="hasil-qr-code">
+                                <label class="col-sm-4 col-form-label" for="hasil-qrcode">Hasil</label>
+                                <div class="col-sm-8">
+                                    <div id="qrcode"></div>
+                                </div>
                             </div>
-                            <div class="row mb-3" id="display_shift">
-                              <label class="col-sm-4 col-form-label" for="basic-default-name">Jadwal Shift</label>
-                              <div class="col-sm-8">
-                                <select class="form-control" id="jadwal_shift" name="jadwal_shift" required>
-                                  <option value="" selected>Pilih Shift</option>
-                                  <option value="Shift 1">Shift 1</option>
-                                  <option value="Shift 2">Shift 2</option>
-                                  <option value="Shift 3">Shift 3</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div class="row mb-3" id="display_wfo_wfh">
-                              <label class="col-sm-4 col-form-label" for="basic-default-name">WFO/WFH</label>
-                              <div class="col-sm-8">
-                              <input type="radio" id="wfo" name="wfo_wfh" value="wfo">
-                              <label for="wfo">WFO</label><br>
-                              <input type="radio" id="wfh" name="wfo_wfh" value="wfh">
-                              <label for="wfh">WFH</label>
-                              </div>
-                            </div>
-                            <div class="row mb-3">
-                              <label class="col-sm-4 col-form-label" for="basic-default-company">Lokasi</label>
-                              <div class="col-sm-8">
-                                <textarea
-                                  class="form-control"
-                                  id="lokasi_perangkat"
-                                  name="lokasi_perangkat"
-                                  readonly required
-                                ></textarea>
-                              </div>
-                            </div>
-                            <div class="row mb-3" style="display:none">
-                              <label class="col-sm-4 col-form-label" for="nama_kantor">Lokasi Kantor</label>
-                              <div class="col-sm-8">
-                                  <input type="text" 
-                                    id="nama_kantor"
-                                    name="nama_kantor"
-                                    class="form-control"
-                                    readonly
-                                  >
-                              </div>
-                            </div>
-
-                            <div class="row justify-content-end">
-                              <div class="col-sm-10">
-                              </div>
-                              <div class="col-sm-3">
-                                <button type="button" class="btn btn-sm btn-primary" onclick="check_in_check()">Check In</button>
-                              </div>
+                            <div class="row justify-content-end" id="button-generate">
+                              
+                                    <div class="col-sm-10">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-sm btn-primary" onClick="qrcodeGenerate()">Generate</button>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-end" id="button-reset-print" style="display:none">
+                                    <div class="col-sm-10">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-sm btn-warning" onClick="resetForm()">Reset</button>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-sm btn-success" onClick="printForm()">Print</button>
+                                    </div>
+                                </div>
                             </div>
                           </form>
                           
 
                         </div>
                       </div>
-                      <div class="col-sm-2 text-center text-sm-left">
-                        <div class="card-body pb-0 px-0 px-md-4">
-                          <img
-                            src="assets/img/illustrations/JMTO.png"
-                            height="300"
-                            alt="View Badge User"
-                            data-app-dark-img="illustrations/JMTO.png"
-                            data-app-light-img="illustrations/JMTO.png"
-                          />
-                        </div>
-                      </div>
+                      
                       </div>
                   </div>
                     </div>
@@ -369,43 +249,23 @@
                   <thead>
                     <tr style="text-align:center">
                       <th>No</th>
-                      <th>Tanggal Kehadiran</th>
-                      <th>Lokasi Kerja</th>
-                      <th>Jadwal Shift</th>
-                      <th>Waktu Check In</th>
-                      <th>Waktu Check Out</th>
-                      <th>Status</th>
+                      <th>Tanggal</th>
+                      <th>Lokasi Absensi</th>
+                      <th>Latitude</th>
+                      <th>Longitude</th>
+                      <th>file</th>
                     </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
-                    <?php
-                    $sqlTableAbsensi = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 7");
-                    
-                    $counter = 1;
-                    // $dataTableAbsensiForOther = mysqli_fetch_array($sqlTableAbsensi);
-                    while ($dataTableAbsensi = mysqli_fetch_array($sqlTableAbsensi)){
-
-                      echo "<tr style='text-align:center'>";
-
-                        echo "<td><i class='fab fa-angular fa-lg text-danger me-3'></i> <strong>".$counter."</strong></td>";
-                        echo "<td>".$dataTableAbsensi['tgl_absence']."</td>";
-                        echo "<td>".$dataTableAbsensi['lokasi_kerja']."</td>";
-                        echo "<td>".$dataTableAbsensi['shift']."</td>";
-                        echo "<td><span class='badge bg-label-primary me-1'>".$dataTableAbsensi['checkin_time']." WIB</span></td>";
-                        echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['checkout_time']." WIB</span></td>";
+                    <tr style="text-align:center"> 
+                      <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>1</strong></td>
+                      <td>19-04-2022</td>
+                      <td>Dukuh V, KramatJati, Jakarta Timur, DKI Jakarta, Indonesia</td>
+                      <td>Shift 1</td>
+                      <td><span class="badge bg-label-primary me-1">07:59:20 WIB</span></td>
+                      <td><span class="badge bg-label-danger me-1">17:30:14 WIB</span></td>
                       
-                        $statusCheckin = $dataTableAbsensi['status_checkin'];
-                        if ($statusCheckin==1){
-                          echo "<td>Sudah checkout</td>";
-                        }else{
-                          echo "<td>Masih checkin</td>";
-                        }
-
-                      echo "</tr>";
-                      $counter = $counter+1;
-                      
-                    }                    
-                    ?>
+                    </tr>
                     
                   </tbody>
                 </table>
@@ -475,13 +335,6 @@
       <!-- Overlay -->
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
-
-    <!-- //PHP untuk card, ambil data dari database -->
-    <?php
-      $sqlTableAbsensiLast = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 1");
-      $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
-      $statusCheckin = $dataTableAbsensiLast['status_checkin'];
-    ?>
     <!-- / Layout wrapper -->
 
     <!-- <div class="buy-now">
@@ -514,21 +367,9 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-    
-    <script type="text/javascript">
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 
-        var status_checkin = "<?php echo $statusCheckin; ?>";
-        // console.log(status_checkin);
-        if (status_checkin == 1){
-          document.getElementById("checked-in").style.display = "none";
-          document.getElementById("card-check-in").style.display = "show";
-          document.getElementById("rejected-check-in").style.display = "none";
-        } else{
-          document.getElementById("checked-in").style.display = "show";
-          document.getElementById("card-check-in").style.display = "none";
-          document.getElementById("rejected-check-in").style.display = "none";
-        }
-        
+    <script type="text/javascript">
 
         //API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
           const Http = new XMLHttpRequest();
@@ -628,21 +469,19 @@
               };
             }
           }
-          function getDate(){
+        
+          $(document).ready(function(){
+            // we call the function
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth()); //January is 0!
+            var mm = String(today.getMonth() + 1); //January is 0!
             var yyyy = today.getFullYear();
             const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
               "Juli", "Agustus", "September", "Oktober", "November", "Desember"
             ];
             today = dd + ' ' + monthNames[mm] + ' ' + yyyy;
             document.getElementById('tanggal-check-in').value = today;
-          }
-          $(document).ready(function(){
-            // we call the function
-            
-            getDate();
+
             getApiLocationAddress();
 
             document.getElementById('display_wfo_wfh').style = "display:none";
@@ -664,21 +503,10 @@
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var resultFinal = radius * c; // Distance in km
           //document.getElementById('selisih').value = resultFinal;
-          console.log(resultFinal);
           if(resultFinal <= 2){
             document.getElementById('form-check-in').submit();
-          }else if (resultFinal > 2){
-            $('#modal-check-in').modal('hide'); 
-            Swal.fire({
-              type: 'error',
-              title: 'Check in gagal!',
-              text: 'Lokasi anda terdeteksi tidak dalam area kantor.',
-              showConfirmButton: true
-            })
-            document.getElementById('form-check-in').reset();
-            getDate();
-
-
+          }else{
+            alert('Lokasi anda terlalu jauh dari kantor');
           }
         }
         function deg2rad(deg) {
@@ -710,23 +538,51 @@
 
         var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250});
         html5QrcodeScanner.render(onScanSuccess);
-        function confirmCheckOut(){
-          
-          Swal.fire({
-              title: "Apakah anda yakin?",
-              text: "Anda akan check out dari kantor",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonText: 'Ya',
-              cancelButtonText: `Tidak`,
-          }).then((result) => {
-            console.log(result);
-            /* Read more about isConfirmed, isDenied below */
-            if (result['value']==true) {
-              window.location.replace("/mydata/modul/absensi-dev/proses-check-out.php");
-              Swal.fire('Checked Out!', '', 'success')
-            }
-          })
+       
+            var qrcode = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                type: "svg",
+                data: "wdedwdeeeefreefr",
+                image: "assets/img/logo-jmto.png",
+                dotsOptions: {
+                    color: "#104d9f",
+                    type: "rounded"
+                },
+                backgroundOptions: {
+                    color: "#e9ebee",
+                },
+                imageOptions: {
+                    crossOrigin: "anonymous",
+                    margin: 0
+                }
+            });
+
+        function qrcodeGenerate (){
+            
+            var nama_lokasi = document.getElementById('nama_lokasi').value;
+            var longitude = document.getElementById('longitude').value;
+            var latitude = document.getElementById('latitude').value;
+            document.getElementById('nama_lokasi').readOnly=true;
+            document.getElementById('longitude').readOnly=true;
+            document.getElementById('latitude').readOnly=true;
+            qrcode.update({data : nama_lokasi+';'+longitude+';'+latitude});
+            qrcode.append(document.getElementById("qrcode"));
+            document.getElementById('hasil-qr-code').style = "display:show";
+            document.getElementById('button-reset-print').style = "display:show";
+            document.getElementById('button-generate').style = "display:none";
+            
+        }
+        function resetForm(){
+            document.getElementById('nama_lokasi').readOnly=false;
+            document.getElementById('longitude').readOnly=false;
+            document.getElementById('latitude').readOnly=false;
+            document.getElementById('hasil-qr-code').style = "display:none";
+            document.getElementById('button-reset-print').style = "display:none";
+            document.getElementById('button-generate').style = "display:show";
+        }
+        function printForm(){
+
         }
     </script>
   </body>
