@@ -264,6 +264,6 @@
     }
   // echo $query;
   $ex = mysql_query($query);
-  header("location: /mydata/modul/absensi-dev/dashboard-absensi.php");	
+  header("location: /mydata-trx/modul/absensi-dev/dashboard-absensi.php");	
 
 ?>

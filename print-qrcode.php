@@ -1,5 +1,7 @@
 <?php 
-	  include_once("config/config.php");
+	  include_once("../../config/config.php");
+    include_once("../../config/fungsi_indotgl.php");  
+    include_once("../../library/buildquery.php");
     session_start();
 
     $namalengkap = $_SESSION['namalengkap'];	
@@ -85,6 +87,48 @@
         .kuning {
             background-color: red !important; 
         }
+        .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
+        float: left;
+        }
+        .col-sm-12 {
+              width: 100%;
+        }
+        .col-sm-11 {
+              width: 91.66666667%;
+        }
+        .col-sm-10 {
+              width: 83.33333333%;
+        }
+        .col-sm-9 {
+              width: 75%;
+        }
+        .col-sm-8 {
+              width: 66.66666667%;
+        }
+        .col-sm-7 {
+              width: 58.33333333%;
+        }
+        .col-sm-6 {
+              width: 50%;
+        }
+        .col-sm-5 {
+              width: 41.66666667%;
+        }
+        .col-sm-4 {
+              width: 33.33333333%;
+        }
+        .col-sm-3 {
+              width: 25%;
+        }
+        .col-sm-2 {
+              width: 16.66666667%;
+        }
+        .col-sm-1 {
+              width: 8.33333333%;
+        }
+        hr {
+          border-top: solid 1px #dedede !important;
+        }
         }
     </style>
   </head>
@@ -118,17 +162,42 @@
                               <img src="assets/img/logo-jmto.png" alt="" style="width=100px;height:40px;">
 
                         </div>
+                        <?php 
+                        $id_qr = $_GET['id'];
+                        $sqlTableQRCode = mysql_query("select * from saved_qrcode_list where qr_id='$id_qr'");
+
+                        $dataTableQRCode = mysqli_fetch_array($sqlTableQRCode); ?>
                         <div class="card-body">
                             <div class="card-title">
                                 <center>
                                     <h1 class="text-primary"><b>Scan QR Code</b><h1>
-                                    <h4>Scan kode QR untuk checkin absensi karyawan</h4>
+                                    <h4>Scan kode QR untuk checkin absensi karyawan</h4><br>
                                     <div id="qrcode"></div><br>
-                                    <h4 class="text-primary"><b>Kantor Pusat Jasa Marga</b></h4>
+                                    <h4 class="text-primary"><b><?php echo $dataTableQRCode['lokasi_absensi']; ?></b></h4>
                                 </center>
                                 </div>
-                            <div class="kuning">
-                                <center><h4 class="text-primary"><b>CARA SCAN QR CODE</b></h4></div></center>
+                           
+
+                            <hr>
+                            <br>
+                            
+                            <div class="kuning col-sm-12">
+                                  <center><h4 class="text-primary"><b>CARA SCAN QR CODE</b></h4></div></center>
+                              </div>
+                            <div class="row">
+                              
+                              <div class="col-sm-4">
+                              <center><h5 class="text-primary">1</h5></center>
+                              <b>Buka MyData</b> - Masuk kedalam website Mydata melalui mydata.jmto.co.id lalu klik menu absensi
+                              </div>
+                              <div class="col-sm-4">
+                              <center><h5 class="text-primary">2</h5></center>
+                              <b>Isi data checkin</b> - Masukkan informasi checkin melalui form checkin karyawan seperti Operasional/Non Operasional dan WFO/WFH.
+                              </div>
+                              <div class="col-sm-4">
+                              <center><h5 class="text-primary">3</h5></center>
+                              <b>Scan QR</b> - Khusus untuk karyawan Operasional dan Non Operasional yang melakukan WFO, harus scan QR untuk melanjutkan checkin. Khusus karyawan non operasional yang WFH tidak perlu scan QR.
+                              </div>
                             </div>
                         </div>
                       </div>
@@ -159,7 +228,12 @@
                         margin: 0
                     }
                 });
+                var nama_lokasi = <?php echo json_encode($dataTableQRCode['lokasi_absensi']); ?>;
+                var longitude = <?php echo $dataTableQRCode['longitude']; ?>;
+                var latitude = <?php echo $dataTableQRCode['latitude']; ?>;
+                qrcode.update({data : latitude+';'+longitude+';'+nama_lokasi});
                 qrcode.append(document.getElementById("qrcode"));
+
                 window.print();
             </script>
              
@@ -188,7 +262,6 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     
     <script type="text/javascript">
-
        
     </script>
   </body>

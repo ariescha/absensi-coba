@@ -194,6 +194,7 @@
                   $dataTableAbsensiCard = mysqli_fetch_array($sqlTableAbsensiCard);
                   $checkinTimeCard = $dataTableAbsensiCard['check_in'];
                   $checkinLocationCard = $dataTableAbsensiCard['check_in_location'];
+
                 ?>
               <div class="row"  id="checked-in">
                 <div class="col-lg-12 mb-4 order-0">    
@@ -208,7 +209,10 @@
                             <i class="bx bx-time bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $checkinTimeCard ?> WIB</span> <br>
                             <i class="bx bx-map bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $checkinLocationCard ?></span><br>
                             <span id="notif-status-nda"></span><br>
-                          <button id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
+                            <form id="form-check-out" action="proses-check-out.php" method="POST">
+                              <input type="hidden" id="lokasi_check_out" name="lokasi_check_out">
+                              <button id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
+                            </form>
                         </div>
                       </div>
                       <div class="col-sm-2 text-center text-sm-left">
@@ -621,6 +625,8 @@
 
               //return to view
               document.getElementById('lokasi_perangkat').innerHTML = arrayAddressFinal.join(", ");
+              document.getElementById('lokasi_check_out').value = arrayAddressFinal.join(", ");
+
                   }
               };
             }
@@ -720,7 +726,7 @@
             console.log(result);
             /* Read more about isConfirmed, isDenied below */
             if (result['value']==true) {
-              window.location.replace("/mydata/modul/absensi-dev/proses-check-out.php");
+              document.getElementById('form-check-out').submit();
               Swal.fire('Checked Out!', '', 'success')
             }
           })

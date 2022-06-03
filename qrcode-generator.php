@@ -1,5 +1,7 @@
 <?php 
-	  include_once("config/config.php");
+	  include_once("../../config/config.php");
+    include_once("../../config/fungsi_indotgl.php");  
+    include_once("../../library/buildquery.php");
     session_start();
 
     $namalengkap = $_SESSION['namalengkap'];	
@@ -161,8 +163,11 @@
                       <div class="col-sm-8">
                         <div class="card-body">
                           <h4 class="card-title text-primary">Data QR Code</h4>
-                          
-                          <form id="form-check-in" action="proses-qrcode.php" method="POST">
+                          <?php
+                          $sqlTableQRCodeLast = mysql_query("select * from saved_qrcode_list order by qr_id desc limit 1");
+                          $dataTableQRCodeLast = mysqli_fetch_array($sqlTableQRCodeLast);
+                          ?>
+                          <form id="form-qrcode-generator" action="proses-save-qrcode.php" method="POST">
                           <div class="row mb-3">
                               <label class="col-sm-4 col-form-label" for="nama_lokasi">Lokasi Absensi</label>
                               <div class="col-sm-8">
@@ -220,7 +225,7 @@
                                         <button type="button" class="btn btn-sm btn-warning" onClick="resetForm()">Reset</button>
                                     </div>
                                     <div class="col-sm-1">
-                                        <button type="button" class="btn btn-sm btn-success" onClick="printForm()">Print</button>
+                                        <button type="button" class="btn btn-sm btn-success" onClick="printForm(<?php echo $dataTableQRCodeLast['qr_id']?>)">Print</button>
                                     </div>
                                 </div>
                             </div>
@@ -235,18 +240,20 @@
                     </div>
                   </div>
               <hr class="my-5" />
+             
           <div class="row"  id="table">
             <div class="col-lg-12 mb-4 order-0">
                   <!-- Hoverable Table rows -->
             <div class="card">
               <div class="card-header">
-                <h4 class="title">Check In History</h4>
+                <h4 class="title">Data QR Code</h4>
                 <h6 class="sub-title">Berikut adalah rekapitulasi kehadiranmu selama 7 hari terakhir.</h6>
               </div>
               
               <div class="table-responsive text-nowrap">
                 <table class="table table-hover">
                   <thead>
+
                     <tr style="text-align:center">
                       <th>No</th>
                       <th>Tanggal</th>
@@ -257,16 +264,25 @@
                     </tr>
                   </thead>
                   <tbody class="table-border-bottom-0">
-                    <tr style="text-align:center"> 
-                      <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>1</strong></td>
-                      <td>19-04-2022</td>
-                      <td>Dukuh V, KramatJati, Jakarta Timur, DKI Jakarta, Indonesia</td>
-                      <td>Shift 1</td>
-                      <td><span class="badge bg-label-primary me-1">07:59:20 WIB</span></td>
-                      <td><span class="badge bg-label-danger me-1">17:30:14 WIB</span></td>
+                  <?php 
+                  $sqlTableQRCode = mysql_query("select * from saved_qrcode_list");
+
+                  $counter = 1;
+                  while ($dataTableQRCode = mysqli_fetch_array($sqlTableQRCode)){
+
+                    echo "<tr style='text-align:center'>"; 
+                    echo "<td><i class='fab fa-angular fa-lg text-danger me-3'></i>".$counter."</td>";
+                    echo "<td>".$dataTableQRCode['tanggal']."</td>";
+                    echo "<td>".$dataTableQRCode['lokasi_absensi']."</td>";
+                    echo "<td>".$dataTableQRCode['latitude']."</td>";
+                    echo "<td>".$dataTableQRCode['longitude']."</td>";
+                    echo "<td><button class='btn btn-sm btn-warning' onclick='printFile(".$dataTableQRCode['qr_id'].")'><i class='bx bx-printer bx-sm'></i>Print</button</td>";
                       
-                    </tr>
-                    
+                    echo "</tr>";
+                    $counter = $counter+1;
+                  }
+
+                    ?>
                   </tbody>
                 </table>
               </div>
@@ -566,7 +582,7 @@
             document.getElementById('nama_lokasi').readOnly=true;
             document.getElementById('longitude').readOnly=true;
             document.getElementById('latitude').readOnly=true;
-            qrcode.update({data : nama_lokasi+';'+longitude+';'+latitude});
+            qrcode.update({data : latitude+';'+longitude+';'+nama_lokasi});
             qrcode.append(document.getElementById("qrcode"));
             document.getElementById('hasil-qr-code').style = "display:show";
             document.getElementById('button-reset-print').style = "display:show";
@@ -581,8 +597,14 @@
             document.getElementById('button-reset-print').style = "display:none";
             document.getElementById('button-generate').style = "display:show";
         }
-        function printForm(){
-
+        function printForm(id){
+          var idnext = id+1;
+          document.getElementById('form-qrcode-generator').submit();
+          window.open("print-qrcode.php?id="+idnext, '_blank');
+          
+        }
+        function printFile(id){
+          window.open("print-qrcode.php?id="+id, '_blank');
         }
     </script>
   </body>
