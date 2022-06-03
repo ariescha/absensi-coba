@@ -14,9 +14,9 @@
         die();
     }
     $nik = $_SESSION['niklogin'];
-    $sqlTableAbsensiLast = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 1");
+    $sqlTableAbsensiLast = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
     $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
-    $absensiId = $dataTableAbsensiLast['absensi_id'];
+    $absensiId = $dataTableAbsensiLast['id'];
 
     if ($dataTableAbsensiLast['status_checkin']==1){
         header("location: /mydata/modul/absensi-dev/dashboard-absensi.php");
@@ -25,7 +25,7 @@
         $checkoutLocation = null;
         $checkoutTime = date('Y-m-d H:i:s');
 
-        $query = "UPDATE absensi_checkin SET checkout_location='$checkoutLocation', checkout_time='$checkoutTime', status_checkin=1 WHERE absensi_id='$absensiId'";
+        $query = "UPDATE trx_absensi SET check_out_location='$checkoutLocation', check_out='$checkoutTime', status_attendance=1, updated_at='$checkoutTime' WHERE id='$absensiId'";
 
         $ex = mysql_query($query);
         header("location: /mydata/modul/absensi-dev/dashboard-absensi.php");

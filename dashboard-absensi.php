@@ -190,12 +190,10 @@
                 </div>
 
                 <?php
-                  $sqlTableAbsensiCard = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 1");
+                  $sqlTableAbsensiCard = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
                   $dataTableAbsensiCard = mysqli_fetch_array($sqlTableAbsensiCard);
-                  // print_r($dataTableAbsensiLast);
-                    $tanggalAbsenCard =  $dataTableAbsensiCard['tgl_absence'];
-                    $checkinTimeCard = $dataTableAbsensiCard['checkin_time'];
-                    $checkinLocationCard = $dataTableAbsensiCard['checkin_location'];
+                  $checkinTimeCard = $dataTableAbsensiCard['check_in'];
+                  $checkinLocationCard = $dataTableAbsensiCard['check_in_location'];
                 ?>
               <div class="row"  id="checked-in">
                 <div class="col-lg-12 mb-4 order-0">    
@@ -207,7 +205,7 @@
                             <p class="mb-4">
                               Kamu telah berhasil check in dengan detil berikut! Jangan lupa untuk selalu terapkan AKHLAK dalam bekerja 🔥🔥🔥
                             </p>
-                            <i class="bx bx-time bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $tanggalAbsenCard ?>, <?php echo $checkinTimeCard ?> WIB</span> <br>
+                            <i class="bx bx-time bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $checkinTimeCard ?> WIB</span> <br>
                             <i class="bx bx-map bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $checkinLocationCard ?></span><br>
                             <span id="notif-status-nda"></span><br>
                           <button id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
@@ -238,7 +236,6 @@
                       <div class="col-sm-8">
                         <div class="card-body">
                           <h4 class="card-title text-primary">Check In Kehadiran</h4>
-                          
                           <form id="form-check-in" action="proses-check-in.php" method="POST">
                           <div class="row mb-3">
                               <label class="col-sm-4 col-form-label" for="nama_lengkap_karyawan">Nama Lengkap</label>
@@ -379,7 +376,7 @@
                   </thead>
                   <tbody class="table-border-bottom-0">
                     <?php
-                    $sqlTableAbsensi = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 7");
+                    $sqlTableAbsensi = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 7");
                     
                     $counter = 1;
                     // $dataTableAbsensiForOther = mysqli_fetch_array($sqlTableAbsensi);
@@ -388,13 +385,13 @@
                       echo "<tr style='text-align:center'>";
 
                         echo "<td><i class='fab fa-angular fa-lg text-danger me-3'></i> <strong>".$counter."</strong></td>";
-                        echo "<td>".$dataTableAbsensi['tgl_absence']."</td>";
-                        echo "<td>".$dataTableAbsensi['lokasi_kerja']."</td>";
+                        echo "<td>".$dataTableAbsensi['date_absence']."</td>";
+                        echo "<td>".$dataTableAbsensi['location_work']."</td>";
                         echo "<td>".$dataTableAbsensi['shift']."</td>";
-                        echo "<td><span class='badge bg-label-primary me-1'>".$dataTableAbsensi['checkin_time']." WIB</span></td>";
-                        echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['checkout_time']." WIB</span></td>";
+                        echo "<td><span class='badge bg-label-primary me-1'>".$dataTableAbsensi['check_in']." WIB</span></td>";
+                        echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['check_out']." WIB</span></td>";
                       
-                        $statusCheckin = $dataTableAbsensi['status_checkin'];
+                        $statusCheckin = $dataTableAbsensi['status_attendance'];
                         if ($statusCheckin==1){
                           echo "<td>Sudah checkout</td>";
                         }else{
@@ -478,9 +475,9 @@
 
     <!-- //PHP untuk card, ambil data dari database -->
     <?php
-      $sqlTableAbsensiLast = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 1");
+      $sqlTableAbsensiLast = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
       $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
-      $statusCheckin = $dataTableAbsensiLast['status_checkin'];
+      $statusCheckin = $dataTableAbsensiLast['status_attendance'];
     ?>
     <!-- / Layout wrapper -->
 
@@ -665,9 +662,9 @@
           var resultFinal = radius * c; // Distance in km
           //document.getElementById('selisih').value = resultFinal;
           console.log(resultFinal);
-          if(resultFinal <= 2){
+          if(resultFinal <= 100){
             document.getElementById('form-check-in').submit();
-          }else if (resultFinal > 2){
+          }else if (resultFinal > 100){
             $('#modal-check-in').modal('hide'); 
             Swal.fire({
               type: 'error',
