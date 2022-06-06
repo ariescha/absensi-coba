@@ -285,14 +285,30 @@
                                 <label for="non-operasional">Non Operasional</label><br>
                               </div>
                             </div>
+
+                            <?php
+                                  $jadwalShift = mysql_query("select * from absen_jadwal");
+                                  $arrayShift = [];
+                                  while ($jadwalShiftFetch = mysqli_fetch_array($jadwalShift)){
+                                    $arrayCurrentShift = [];
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['title']);
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['start']);
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['end']);
+                                    array_push($arrayShift, $arrayCurrentShift);
+                                  }
+                                  // print_r($arrayShift);
+                                  // echo count($arrayShift);
+                                  // print_r($arrayShift[1][1]);
+                            ?>
+                            
                             <div class="row mb-3" id="display_shift">
                               <label class="col-sm-4 col-form-label" for="basic-default-name">Jadwal Shift</label>
                               <div class="col-sm-8">
                                 <select class="form-control" id="jadwal_shift" name="jadwal_shift" required>
-                                  <option value="" selected>Pilih Shift</option>
-                                  <option value="Shift 1">Shift 1</option>
-                                  <option value="Shift 2">Shift 2</option>
-                                  <option value="Shift 3">Shift 3</option>
+                                  <option value="" disabled selected>Pilih Shift</option>
+                                  <option value="<?php echo $arrayShift[2][1] ?>" >Shift 1</option>
+                                  <option value="<?php echo $arrayShift[3][1] ?>" >Shift 2</option>
+                                  <option value="<?php echo $arrayShift[4][1] ?>" >Shift 3</option>
                                 </select>
                               </div>
                             </div>
@@ -430,6 +446,32 @@
                         </div>
                     </div>
                 </div>
+                <div class="modal fade" id="modal-terlambat" aria-labelledby="modalToggleLabel" tabindex="-1" style="display: none" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <div class="modal-title"><h5>Anda Terlambat.</h5></div>
+                      </div>
+                        <div class="modal-body">
+                        <form id="form-check-in" action="" method="POST">
+                          <div class="row mb-3">
+                              <label  for="alasan_terlambat">Jelaskan alasan keterlambatan anda!</label>
+                              <div >
+                                  <select name="alasan_terlambat" id="alasan_terlambat" class="form-control">
+                                    <option value="">alasan 1</option>
+                                    <option value="">alasan 2</option>
+                                  </select>
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-primary">Kirim</button>
+                            </div>
+                        </form>
+                          
+                          </div>
+                        </div>
+                    </div>
+                </div>
 </html>
             <script type="text/javascript">
                
@@ -555,7 +597,16 @@
             if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
               //Karyawan operasional, munculin modal scanner
               if(document.getElementById('jadwal_shift').value !== ""){
-                  $('#modal-check-in').modal('show'); 
+                  //$('#modal-check-in').modal('show'); 
+                  $('#modal-terlambat').modal('show'); 
+                  // var today = new Date();
+                  // var jadwal_check_in = new Date()
+                  // var jadwal_pilihan = document.getElementById('jadwal_shift').value;
+                  // var array = jadwal_pilihan.split(':');
+                  // jadwal_check_in.setHours(array[0],array[1]);
+                  // var selisih = jadwal_check_in.getTime()-today.getTime();
+                  // selisih1 = selisih/(1000*60*60)
+                  // alert(array+'-'+selisih1);
                 }else{
                   alert('Mohon isi jadwal shift anda!')
                 }
@@ -691,8 +742,8 @@
         //scanner function (UTAMA)
         function onScanSuccess(decodedText, decodedResult) {
             console.log(`Code scanned = ${decodedText}`, decodedResult);
-          
-          navigator.geolocation.getCurrentPosition(function(position) {
+            
+            navigator.geolocation.getCurrentPosition(function(position) {
             var currentPosition = position;
             //CALL API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
             getApiLocationAddress(currentPosition);

@@ -32,7 +32,6 @@
     $checkout_time_sched = null;
 
     $jadwalShift = mysql_query("select * from absen_jadwal");
-    // $jadwalShiftFetch = mysqli_fetch_array($jadwalShift);
     $arrayShift = [];
     while ($jadwalShiftFetch = mysqli_fetch_array($jadwalShift)){
       $arrayCurrentShift = [];
@@ -40,9 +39,7 @@
       array_push($arrayCurrentShift, $jadwalShiftFetch['start']);
       array_push($arrayCurrentShift, $jadwalShiftFetch['end']);
       array_push($arrayShift, $arrayCurrentShift);
-      // echo "................................................sasfsa";
     }
-    // print_r($arrayShift);
     
     //non operasional
     if ($shift == null){
@@ -51,6 +48,7 @@
       $checkin_end_time_sched = $arrayShift[0][1];
       $checkout_time_sched = $arrayShift[0][2];
     }
+    
     //operasional
     else{
       if ($shift=='Shift 1'){
