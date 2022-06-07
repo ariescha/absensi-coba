@@ -90,9 +90,10 @@
     $checkin_location = $post['lokasi_perangkat'];
     $checkout_location = null;
     // $lokasi_kerja = $post['nama_kantor'];
-    $status_attendance = 1;
+    $status_checkin = 0;
     $reason = null;
     $notes = null;
+    $status_attendance = 1;
 
     //new variable
     $nominal = null;
@@ -113,52 +114,49 @@
                                             check_in_time_start_schedule,
                                             check_in_time_end_schedule,
                                             check_out_time_schedule,
-                                            check_in,
-                                            
+                                            check_in,                                      
                                             check_in_location,
                                             check_out_location,
-                                            status_attendance,
+                                            status_checkin,
                                             reason,
                                             late_reason,
                                             location_work,
                                             shift,
                                             description,
-
                                             nominal,
-                                            status,
-                                            
+                                            status,                                        
                                             status_by,
                                             foto_in,
                                             foto_out,
                                             created_at,
                                             updated_at,
                                             created_by,
-                                            updated_by ) 
+                                            updated_by,
+                                            status_attendance ) 
         values('$nik',
                 '$tgl_absence',
                 '$checkin_start_time_sched',
                 '$checkin_end_time_sched',
                 '$checkout_time_sched',
-                '$checkin_time',
-                
+                '$checkin_time',               
                 '$checkin_location',
                 '$checokut_location',
-                '$status_attendance',
+                '$status_checkin',
                 '$reason',
                 '$late_reason',
                 'Operasional',
                 '$shift',
                 '$notes',
                 '$nominal',
-                '$status',
-                
+                '$status',               
                 '$status_by',
                 '$foto_in',
                 '$foto_out',
                 '$created_at',
                 '$updated_at', 
                 '$created_by',
-                '$updated_by') ";
+                '$updated_by',
+                '$status_attendance') ";
         
         
       } else{
@@ -168,51 +166,49 @@
                                               check_in_time_start_schedule,
                                               check_in_time_end_schedule,
                                               check_out_time_schedule,
-                                              check_in,
-                                              
+                                              check_in,                                         
                                               check_in_location,
                                               check_out_location,
-                                              status_attendance,
+                                              status_checkin,
                                               reason,
                                               late_reason,
                                               location_work,
                                               shift,
                                               description,
                                               nominal,
-                                              status,
-                                             
+                                              status,      
                                               status_by,
                                               foto_in,
                                               foto_out,
                                               created_at,
                                               updated_at,
                                               created_by,
-                                              updated_by ) 
+                                              updated_by,
+                                              status_attendance ) 
               values('$nik',
                       '$tgl_absence',
                       '$checkin_start_time_sched',
                       '$checkin_end_time_sched',
                       '$checkout_time_sched',
-                      '$checkin_time',
-                      
+                      '$checkin_time',      
                       '$checkin_location',
                       '$checokut_location',
-                      '$status_attendance',
+                      '$status_checkin',
                       '$reason',
                       '$late_reason',
                       'WFA',
                       '$shift',
                       '$notes',
                       '$nominal',
-                      '$status',
-                      
+                      '$status',   
                       '$status_by',
                       '$foto_in',
                       '$foto_out',
                       '$created_at',
                       '$updated_at', 
                       '$created_by',
-                      '$updated_by') ";
+                      '$updated_by',
+                      '$status_attendance') ";
         }else{
         
           $query.=" insert into trx_absensi ( nik, 
@@ -220,51 +216,49 @@
                                               check_in_time_start_schedule,
                                               check_in_time_end_schedule,
                                               check_out_time_schedule,
-                                              check_in,
-                                              
+                                              check_in,                
                                               check_in_location,
                                               check_out_location,
-                                              status_attendance,
+                                              status_checkin,
                                               reason,
                                               late_reason,
                                               location_work,
                                               shift,
                                               description,
                                               nominal,
-                                              status,
-                                              
+                                              status,                     
                                               status_by,
                                               foto_in,
                                               foto_out,
                                               created_at,
                                               updated_at,
                                               created_by,
-                                              updated_by ) 
+                                              updated_by,
+                                              status_attendance ) 
               values('$nik',
                       '$tgl_absence',
                       '$checkin_start_time_sched',
                       '$checkin_end_time_sched',
                       '$checkout_time_sched',
-                      '$checkin_time',
-                      
+                      '$checkin_time',            
                       '$checkin_location',
                       '$checokut_location',
-                      '$status_attendance',
+                      '$status_checkin',
                       '$reason',
                       '$late_reason',
                       'WFO',
                       '$shift',
                       '$notes',
                       '$nominal',
-                      '$status',
-                      
+                      '$status',                 
                       '$status_by',
                       '$foto_in',
                       '$foto_out',
                       '$created_at',
                       '$updated_at', 
                       '$created_by',
-                      '$updated_by') ";
+                      '$updated_by',
+                      '$status_attendance') ";
         
         }
       }

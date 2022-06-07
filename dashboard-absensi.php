@@ -211,7 +211,7 @@
                             <span id="notif-status-nda"></span><br>
                             <form id="form-check-out" action="proses-check-out.php" method="POST">
                               <input type="hidden" id="lokasi_check_out" name="lokasi_check_out">
-                              <button id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
+                              <button type="button" id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
                             </form>
                         </div>
                       </div>
@@ -230,8 +230,51 @@
                   </div>
                   </div>
                   </div>
-              
-                  
+                  <?php
+                  $sqlTableAbsensiCard = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
+                  $dataTableAbsensiCard = mysqli_fetch_array($sqlTableAbsensiCard);
+                  $checkoutTimeCard = $dataTableAbsensiCard['check_out'];
+                  $checkoutLocationCard = $dataTableAbsensiCard['check_out_location'];
+
+                ?>
+              <div class="row"  id="checked-out">
+                <div class="col-lg-12 mb-4 order-0">    
+                  <div class="card">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-sm-8">
+                        <div class="card-body">
+                          <h4 class="card-title text-primary">Checked Out! ✅</h4>
+                            <div id="checked-out-msg-1">
+                              <p class="mb-4">
+                                Kamu telah berhasil check out dengan detil berikut! Selamat beristirahat 🛌
+                              </p>
+                              <i class="bx bx-time bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkout_time"> <?php echo $checkoutTimeCard ?> WIB</span> <br>
+                              <i class="bx bx-map bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkout_location"> <?php echo $checkoutLocationCard ?></span><br>
+                              <span id="notif-status-nda"></span><br></div>
+                            
+                            <div id="checked-out-msg-2">
+                              <p class="mb-4">
+                                Kamu telah check out otomatis oleh sistem! Selamat beristirahat 🛌
+                              </p><br></div>  
+
+                            
+                        </div>
+                      </div>
+                      <div class="col-sm-2 text-center text-sm-left">
+                        <div class="card-body pb-0 px-0 px-md-4">
+                          <img
+                            src="assets/img/illustrations/company-life-jmto.png"
+                            height="200"
+                            alt="View Badge User"
+                            data-app-dark-img="illustrations/company-life-jmto.png"
+                            data-app-light-img="illustrations/company-life-jmto.png"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  </div>
 
               <div class="row"  id="card-check-in">
                 <div class="col-lg-12 mb-4 order-0">
@@ -428,10 +471,16 @@
                         echo "<td>".$dataTableAbsensi['shift']."</td>";
                         echo "<td><span class='badge bg-label-primary me-1'>".$dataTableAbsensi['check_in']." WIB</span></td>";
                       
-                        $statusCheckin = $dataTableAbsensi['check_out'];
-                        if ($statusCheckin!=null){
-                          echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['check_out']." WIB</span></td>";
-                          echo "<td>Sudah checkout</td>";
+                        $statusCheckin = $dataTableAbsensi['status_checkin'];
+                        if ($statusCheckin==1){
+                          if ($dataTableAbsensi['check_out']==null){
+                            echo "<td><span class='badge bg-label-danger me-1'>-</span></td>";
+                            echo "<td>Tidak checkout</td>";
+                          }else{
+                            echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['check_out']." WIB</span></td>";
+                            echo "<td>Sudah checkout</td>";
+                          }
+                          
                         }else{
                           echo "<td><span class='badge bg-label-danger me-1'>-</span></td>";
                           echo "<td>Masih checkin</td>";
@@ -519,21 +568,34 @@
       $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
       $timeDifferent = null;
       if ($dataTableAbsensiLast['id']==null){
-        $statusCheckin = "begin";
+        $statusCheckin = 1;
       }else{
-        $statusCheckin = $dataTableAbsensiLast['check_out'];
-        if ($statusCheckin==null){
-          $timestampData = strtotime($dataTableAbsensiLast['check_in']);
-          $timestampNow = strtotime(date('Y-m-d H:i:sa'));
-          $timeDifferent = $timestampNow-$timestampData;
-        }
+        $statusCheckin = $dataTableAbsensiLast['status_checkin'];
 
+        //time calculate
+        $timestampData = strtotime($dataTableAbsensiLast['check_in']);
+        $timestampNow = strtotime("now");
+        $timeDifferent = $timestampNow-$timestampData;
         
+        $absensiId = $dataTableAbsensiLast['id'];
+        //auto checkout jika lebih dari 12 jam
+        if ($timeDifferent>=21600){
+          mysql_query("UPDATE trx_absensi SET status_checkin=1 WHERE id='$absensiId'");
+          // echo "jalannnnn";
+        }
+        // echo $timeDifferent;
       }
-
-      // $sqlCekLatTimeCheckin = mysql_query("select * from trx_absensi where nik='$nik' where check_in< order by id desc limit 1");
-
       
+    ?>
+
+    <?php
+      $sqlTableAbsensiForTime = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
+      $dataTableAbsensiForTime = mysqli_fetch_array($sqlTableAbsensiForTime);
+
+      $timeData = strtotime($dataTableAbsensiForTime['check_in']);
+      $timeCurrent = strtotime("now");
+      $timeBeda = $timeCurrent-$timeData;
+      echo $timeBeda;
     ?>
     <!-- / Layout wrapper -->
 
@@ -569,24 +631,47 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     
     <script type="text/javascript">
-        // console.log()
         var status_checkin = "<?php echo $statusCheckin; ?>";
-        var bedaWaktu = "<?php echo $timeDifferent; ?>";
-        if (!status_checkin){
-          //cek apakah jika lupa checkout sudah 12 jam dari waktu terakhir checkin nya atau belum
-          if (bedaWaktu>=21600){
+        var cekDataLast = "<?php echo $dataTableAbsensiLast['id']; ?>";
+        // console.log(cekDataLast);
+        // console.log("fauziii");
+        if (status_checkin==0){
+          document.getElementById("checked-in").style.display = "show";
+          document.getElementById("card-check-in").style.display = "none";
+          document.getElementById("rejected-check-in").style.display = "none";
+          document.getElementById("checked-out").style.display = "none";
+          
+        } else{
+          if(!cekDataLast){
             document.getElementById("checked-in").style.display = "none";
             document.getElementById("card-check-in").style.display = "show";
             document.getElementById("rejected-check-in").style.display = "none";
+            document.getElementById("checked-out").style.display = "none";
           }else{
-            document.getElementById("checked-in").style.display = "show";
-            document.getElementById("card-check-in").style.display = "none";
-            document.getElementById("rejected-check-in").style.display = "none";
-          }
-        } else{
-          document.getElementById("checked-in").style.display = "none";
-          document.getElementById("card-check-in").style.display = "show";
-          document.getElementById("rejected-check-in").style.display = "none";
+            var timeBedaJ = "<?php echo $timeBeda; ?>";
+            var checkOutTime = "<?php echo $dataTableAbsensiForTime['check_out'] ?>"
+            if (timeBedaJ<=380){
+              //kalau misalkan waktunya belum 22 jam
+              document.getElementById("checked-in").style.display = "none";
+              document.getElementById("card-check-in").style.display = "none";
+              document.getElementById("rejected-check-in").style.display = "none";
+              document.getElementById("checked-out").style.display = "show";
+              if (!checkOutTime){
+                document.getElementById("checked-out-msg-1").style.display = "none";
+                document.getElementById("checked-out-msg-2").style.display = "show";
+              }
+              else{
+                document.getElementById("checked-out-msg-1").style.display = "show";
+                document.getElementById("checked-out-msg-2").style.display = "none";
+              }
+            }else{
+              //kalau sudah lebih 22 jam
+              document.getElementById("checked-in").style.display = "none";
+              document.getElementById("card-check-in").style.display = "show";
+              document.getElementById("rejected-check-in").style.display = "none";
+              document.getElementById("checked-out").style.display = "none";
+            }
+          }          
         }
         
 
