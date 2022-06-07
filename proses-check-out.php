@@ -24,7 +24,8 @@
         date_default_timezone_set("Asia/Bangkok");
         $checkoutLocation = $_POST['lokasi_check_out'];
         $checkoutTime = date('Y-m-d H:i:s');
-        $query = "UPDATE trx_absensi SET check_out_location='$checkoutLocation', check_out='$checkoutTime', status_attendance=1, updated_at='$checkoutTime' WHERE id='$absensiId'";
+        // $query = "UPDATE trx_absensi SET check_out_location='$checkoutLocation', check_out='$checkoutTime', status_attendance=1, updated_at='$checkoutTime' WHERE id='$absensiId'";
+        $query = "UPDATE trx_absensi SET check_out_location='$checkoutLocation', check_out='$checkoutTime', updated_at='$checkoutTime' WHERE id='$absensiId'";
 
         $ex = mysql_query($query);
         header("location: /mydata-trx/modul/absensi-dev/dashboard-absensi.php");

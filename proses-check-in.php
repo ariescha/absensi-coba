@@ -90,14 +90,14 @@
     $checkin_location = $post['lokasi_perangkat'];
     $checkout_location = null;
     // $lokasi_kerja = $post['nama_kantor'];
-    $status_attendance = 0;
+    $status_attendance = 1;
     $reason = null;
     $notes = null;
 
     //new variable
     $nominal = null;
     $status = null;
-    $status_at = null;
+    // $status_at = null;
     $status_by = null;
     $foto_in = null;
     $foto_out = null;
@@ -114,7 +114,7 @@
                                             check_in_time_end_schedule,
                                             check_out_time_schedule,
                                             check_in,
-                                            check_out,
+                                            
                                             check_in_location,
                                             check_out_location,
                                             status_attendance,
@@ -126,7 +126,7 @@
 
                                             nominal,
                                             status,
-                                            status_at,
+                                            
                                             status_by,
                                             foto_in,
                                             foto_out,
@@ -140,7 +140,7 @@
                 '$checkin_end_time_sched',
                 '$checkout_time_sched',
                 '$checkin_time',
-                '$checkout_time',
+                
                 '$checkin_location',
                 '$checokut_location',
                 '$status_attendance',
@@ -151,7 +151,7 @@
                 '$notes',
                 '$nominal',
                 '$status',
-                '$status_at',
+                
                 '$status_by',
                 '$foto_in',
                 '$foto_out',
@@ -169,7 +169,7 @@
                                               check_in_time_end_schedule,
                                               check_out_time_schedule,
                                               check_in,
-                                              check_out,
+                                              
                                               check_in_location,
                                               check_out_location,
                                               status_attendance,
@@ -180,7 +180,7 @@
                                               description,
                                               nominal,
                                               status,
-                                              status_at,
+                                             
                                               status_by,
                                               foto_in,
                                               foto_out,
@@ -194,7 +194,7 @@
                       '$checkin_end_time_sched',
                       '$checkout_time_sched',
                       '$checkin_time',
-                      '$checkout_time',
+                      
                       '$checkin_location',
                       '$checokut_location',
                       '$status_attendance',
@@ -205,7 +205,7 @@
                       '$notes',
                       '$nominal',
                       '$status',
-                      '$status_at',
+                      
                       '$status_by',
                       '$foto_in',
                       '$foto_out',
@@ -221,7 +221,7 @@
                                               check_in_time_end_schedule,
                                               check_out_time_schedule,
                                               check_in,
-                                              check_out,
+                                              
                                               check_in_location,
                                               check_out_location,
                                               status_attendance,
@@ -232,7 +232,7 @@
                                               description,
                                               nominal,
                                               status,
-                                              status_at,
+                                              
                                               status_by,
                                               foto_in,
                                               foto_out,
@@ -246,7 +246,7 @@
                       '$checkin_end_time_sched',
                       '$checkout_time_sched',
                       '$checkin_time',
-                      '$checkout_time',
+                      
                       '$checkin_location',
                       '$checokut_location',
                       '$status_attendance',
@@ -257,7 +257,7 @@
                       '$notes',
                       '$nominal',
                       '$status',
-                      '$status_at',
+                      
                       '$status_by',
                       '$foto_in',
                       '$foto_out',

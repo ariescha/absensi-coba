@@ -430,12 +430,13 @@
                         echo "<td>".$dataTableAbsensi['location_work']."</td>";
                         echo "<td>".$dataTableAbsensi['shift']."</td>";
                         echo "<td><span class='badge bg-label-primary me-1'>".$dataTableAbsensi['check_in']." WIB</span></td>";
-                        echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['check_out']." WIB</span></td>";
                       
-                        $statusCheckin = $dataTableAbsensi['status_attendance'];
-                        if ($statusCheckin==1){
+                        $statusCheckin = $dataTableAbsensi['check_out'];
+                        if ($statusCheckin!=null){
+                          echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['check_out']." WIB</span></td>";
                           echo "<td>Sudah checkout</td>";
                         }else{
+                          echo "<td><span class='badge bg-label-danger me-1'>-</span></td>";
                           echo "<td>Masih checkin</td>";
                         }
 
@@ -519,11 +520,15 @@
     <?php
       $sqlTableAbsensiLast = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
       $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
-      if ($dataTableAbsensiLast['status_attendance']==null){
-        $statusCheckin = 1;
+      if ($dataTableAbsensiLast['id']==null){
+        $statusCheckin = "begin";
       }else{
-        $statusCheckin = $dataTableAbsensiLast['status_attendance'];
+        $statusCheckin = $dataTableAbsensiLast['check_out'];
+        
       }
+
+      // $sqlCekLatTimeCheckin = mysql_query("select * from trx_absensi where nik='$nik' where check_in< order by id desc limit 1");
+
       
     ?>
     <!-- / Layout wrapper -->
@@ -562,14 +567,13 @@
     <script type="text/javascript">
 
         var status_checkin = "<?php echo $statusCheckin; ?>";
-        // console.log(status_checkin);
-        if (status_checkin == 1){
-          document.getElementById("checked-in").style.display = "none";
-          document.getElementById("card-check-in").style.display = "show";
-          document.getElementById("rejected-check-in").style.display = "none";
-        } else{
+        if (!status_checkin){
           document.getElementById("checked-in").style.display = "show";
           document.getElementById("card-check-in").style.display = "none";
+          document.getElementById("rejected-check-in").style.display = "none";
+        } else{
+          document.getElementById("checked-in").style.display = "none";
+          document.getElementById("card-check-in").style.display = "show";
           document.getElementById("rejected-check-in").style.display = "none";
         }
         
