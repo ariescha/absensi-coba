@@ -27,6 +27,7 @@
     $query = "";
 
     $shift = $post['jadwal_shift'];
+    // echo $shift;
     $checkin_start_time_sched = null;
     $checkin_end_time_sched = null;
     $checkout_time_sched = null;
@@ -43,7 +44,7 @@
     
     //non operasional
     if ($shift == null){
-      $shift = 'Non Operasional ';
+      $shift = 'SHIFT_1';
       $checkin_start_time_sched = $arrayShift[0][1];
       $checkin_end_time_sched = $arrayShift[0][1];
       $checkout_time_sched = $arrayShift[0][2];
@@ -51,34 +52,44 @@
     
     //operasional
     else{
-      if ($shift=='Shift 1'){
+      if ($shift=='05:00'){
+        $shift = 'SHIFT_1';
         $checkin_start_time_sched = $arrayShift[2][1];
         $checkin_end_time_sched = $arrayShift[2][1];
         $checkout_time_sched = $arrayShift[2][2];
-      }else if ($shift=='Shift 2'){
+      }else if ($shift=='13:00'){
+        $shift = 'SHIFT_2';
         $checkin_start_time_sched = $arrayShift[3][1];
         $checkin_end_time_sched = $arrayShift[3][1];
         $checkout_time_sched = $arrayShift[3][2];
       } else{
+        $shift = 'SHIFT_3';
         $checkin_start_time_sched = $arrayShift[4][1];
         $checkin_end_time_sched = $arrayShift[4][1];
         $checkout_time_sched = $arrayShift[4][2];
       }
     }
+
+    // echo $shift;
+
     // echo $checkin_start_time_sched;
     // echo $checkin_end_time_sched;
     // echo $checkout_time_sched;
 
     date_default_timezone_set("Asia/Bangkok");
     $nik =  $post['nik_karyawan'];
-    echo $nik;
+    // echo $nik;
     $nama = $post['nama_lengkap_karyawan'];
+    if(isset($post['alasan_terlambat'])){
+      $late_reason = $post['alasan_terlambat'];
+    }else{
+      $late_reason = null;
+    }
     $tgl_absence = date('Y-m-d');
     $checkin_time = date('Y-m-d H:i:sa');
-    $late_reason = null;
     $checkin_location = $post['lokasi_perangkat'];
     $checkout_location = null;
-    $lokasi_kerja = $post['nama_kantor'];
+    // $lokasi_kerja = $post['nama_kantor'];
     $status_attendance = 0;
     $reason = null;
     $notes = null;
@@ -94,8 +105,6 @@
     $updated_at = $checkin_time;
     $created_by = $nik;
     $updated_by = $nik;
-
-
 
     if($post!=""){
       if($post['jenis_operasional'] == 'Operasional'){  
@@ -137,7 +146,7 @@
                 '$status_attendance',
                 '$reason',
                 '$late_reason',
-                '$lokasi_kerja',
+                'Operasional',
                 '$shift',
                 '$notes',
                 '$nominal',
@@ -153,7 +162,7 @@
         
         
       } else{
-        if ($post['wfo_wfh'] == 'wfh'){          
+        if ($post['wfo_wfa'] == 'wfa'){          
           $query.=" insert into trx_absensi ( nik, 
                                               date_absence, 
                                               check_in_time_start_schedule,
@@ -191,8 +200,8 @@
                       '$status_attendance',
                       '$reason',
                       '$late_reason',
-                      '$checkin_location',
-                      'WFH_$shift',
+                      'WFA',
+                      '$shift',
                       '$notes',
                       '$nominal',
                       '$status',
@@ -243,8 +252,8 @@
                       '$status_attendance',
                       '$reason',
                       '$late_reason',
-                      '$lokasi_kerja',
-                      'WFO_$shift',
+                      'WFO',
+                      '$shift',
                       '$notes',
                       '$nominal',
                       '$status',

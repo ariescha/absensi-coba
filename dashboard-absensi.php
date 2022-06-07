@@ -312,13 +312,13 @@
                                 </select>
                               </div>
                             </div>
-                            <div class="row mb-3" id="display_wfo_wfh">
-                              <label class="col-sm-4 col-form-label" for="basic-default-name">WFO/WFH</label>
+                            <div class="row mb-3" id="display_wfo_wfa">
+                              <label class="col-sm-4 col-form-label" for="basic-default-name">WFO/WFA</label>
                               <div class="col-sm-8">
-                              <input type="radio" id="wfo" name="wfo_wfh" value="wfo">
+                              <input type="radio" id="wfo" name="wfo_wfa" value="wfo">
                               <label for="wfo">WFO</label><br>
-                              <input type="radio" id="wfh" name="wfo_wfh" value="wfh">
-                              <label for="wfh">WFH</label>
+                              <input type="radio" id="wfa" name="wfo_wfa" value="wfa">
+                              <label for="wfa">WFA</label>
                               </div>
                             </div>
                             <div class="row mb-3">
@@ -343,7 +343,28 @@
                                   >
                               </div>
                             </div>
-
+                            <div class="modal fade" id="modal-terlambat" aria-labelledby="modalToggleLabel" tabindex="-1" style="display: none" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <div class="modal-title"><h5>Anda Terlambat.</h5></div>
+                      </div>
+                        <div class="modal-body">
+                          <div class="row mb-3">
+                              <label  for="alasan_terlambat">Jelaskan alasan keterlambatan anda!</label>
+                              <div >
+                                <textarea name="alasan_terlambat" id="alasan_terlambat" class="form-control" maxlength="255"></textarea>
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-primary" onclick="kirim_alasan()">Kirim</button>
+                            </div>
+                        
+                          
+                          </div>
+                        </div>
+                    </div>
+                </div>
                             <div class="row justify-content-end">
                               <div class="col-sm-10">
                               </div>
@@ -446,32 +467,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal fade" id="modal-terlambat" aria-labelledby="modalToggleLabel" tabindex="-1" style="display: none" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <div class="modal-title"><h5>Anda Terlambat.</h5></div>
-                      </div>
-                        <div class="modal-body">
-                        <form id="form-check-in" action="" method="POST">
-                          <div class="row mb-3">
-                              <label  for="alasan_terlambat">Jelaskan alasan keterlambatan anda!</label>
-                              <div >
-                                  <select name="alasan_terlambat" id="alasan_terlambat" class="form-control">
-                                    <option value="">alasan 1</option>
-                                    <option value="">alasan 2</option>
-                                  </select>
-                              </div>
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-primary">Kirim</button>
-                            </div>
-                        </form>
-                          
-                          </div>
-                        </div>
-                    </div>
-                </div>
+                
 </html>
             <script type="text/javascript">
                
@@ -523,7 +519,12 @@
     <?php
       $sqlTableAbsensiLast = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
       $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
-      $statusCheckin = $dataTableAbsensiLast['status_attendance'];
+      if ($dataTableAbsensiLast['status_attendance']==null){
+        $statusCheckin = 1;
+      }else{
+        $statusCheckin = $dataTableAbsensiLast['status_attendance'];
+      }
+      
     ?>
     <!-- / Layout wrapper -->
 
@@ -579,16 +580,16 @@
           function check_display_operasional(){
             if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
               //Karyawan Operasional, menampilkan radio button shift
-              document.getElementById('display_wfo_wfh').style = "display:none";
+              document.getElementById('display_wfo_wfa').style = "display:none";
               document.getElementById('display_shift').style = "display:show";
-              document.getElementById('display_wfo_wfh').required = false;
+              document.getElementById('display_wfo_wfa').required = false;
               document.getElementById('display_shift').required = true;
 
             }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
-              //Karyawan Non Operasional, menampilkan radio button wfo/wfh
-              document.getElementById('display_wfo_wfh').style = "display:show";
+              //Karyawan Non Operasional, menampilkan radio button wfo/wfa
+              document.getElementById('display_wfo_wfa').style = "display:show";
               document.getElementById('display_shift').style = "display:none";
-              document.getElementById('display_wfo_wfh').required = true;
+              document.getElementById('display_wfo_wfa').required = true;
               document.getElementById('display_shift').required = false;
             }
           }
@@ -597,36 +598,86 @@
             if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
               //Karyawan operasional, munculin modal scanner
               if(document.getElementById('jadwal_shift').value !== ""){
-                  //$('#modal-check-in').modal('show'); 
-                  $('#modal-terlambat').modal('show'); 
-                  // var today = new Date();
-                  // var jadwal_check_in = new Date()
-                  // var jadwal_pilihan = document.getElementById('jadwal_shift').value;
-                  // var array = jadwal_pilihan.split(':');
-                  // jadwal_check_in.setHours(array[0],array[1]);
-                  // var selisih = jadwal_check_in.getTime()-today.getTime();
-                  // selisih1 = selisih/(1000*60*60)
-                  // alert(array+'-'+selisih1);
+                  var today = new Date();
+                  var jadwal_check_in = new Date();
+                  var jadwal_pilihan = document.getElementById('jadwal_shift').value;
+                  var array = jadwal_pilihan.split(':');
+                  jadwal_check_in.setHours(array[0],array[1]);
+                  var selisih = today.getTime()-jadwal_check_in.getTime();
+                  selisih1 = selisih/(1000*60*60);
+                  if(selisih>0){
+                    $('#modal-terlambat').modal('show'); 
+                    document.getElementById("alasan_terlambat").required = true;
+
+                  }else{
+                    $('#modal-check-in').modal('show'); 
+                  }
                 }else{
                   alert('Mohon isi jadwal shift anda!')
                 }
             }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
-              if(document.getElementById('wfo').checked == true && document.getElementById('wfh').checked == false ){
+              if(document.getElementById('wfo').checked == true && document.getElementById('wfa').checked == false ){
                 //Karyawan non operasional wfo, munculin modal scanner
-                
-                  $('#modal-check-in').modal('show'); 
-                
+                  var today = new Date();
+                  var jadwal_check_in = new Date();
+                  var jadwal_pilihan = "08:00";
+                  var array = jadwal_pilihan.split(':');
+                  jadwal_check_in.setHours(array[0],array[1]);
+                  var selisih = today.getTime()-jadwal_check_in.getTime();
+                  selisih1 = selisih/(1000*60*60);
+                  if(selisih>0){
+                    document.getElementById("alasan_terlambat").required = true;
+                    $('#modal-terlambat').modal('show'); 
+                  }else{
+                    document.getElementById("alasan_terlambat").required = false;
+
+                    $('#modal-check-in').modal('show'); 
+                  }
               }
-              else if(document.getElementById('wfo').checked == false && document.getElementById('wfh').checked == true ){
-                //Karyawan non operasional wfH, langsung submit form
-                console.log('form-check-in-submit');
-                document.getElementById('form-check-in').submit();
+              else if(document.getElementById('wfo').checked == false && document.getElementById('wfa').checked == true ){
+                //Karyawan non operasional wfa, langsung submit form
+     
+                var today = new Date();
+                  var jadwal_check_in = new Date();
+                  var jadwal_pilihan = "08:00";
+                  var array = jadwal_pilihan.split(':');
+                  jadwal_check_in.setHours(array[0],array[1]);
+                  var selisih = today.getTime()-jadwal_check_in.getTime();
+                  selisih1 = selisih/(1000*60*60);
+                  if(selisih>0){
+                    document.getElementById("alasan_terlambat").required = true;
+
+                    $('#modal-terlambat').modal('show'); 
+
+                  }else{
+                    document.getElementById("alasan_terlambat").required = false;
+
+                    document.getElementById('form-check-in').submit();
+                  }
               }
-            
             }else{
               alert('Mohon isi status karyawan operasional/non');
             }
           }
+        function kirim_alasan(){
+          if(document.getElementById('alasan_terlambat').value.length > 0){
+            if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
+              if(document.getElementById('wfo').checked == false && document.getElementById('wfa').checked == true ){
+                document.getElementById("alasan_terlambat").required = false;
+                document.getElementById('form-check-in').submit();
+              }else{
+                document.getElementById("alasan_terlambat").required = true;
+                $('#modal-check-in').modal('show');
+              }
+            }else{
+              document.getElementById("alasan_terlambat").required = true;
+              $('#modal-check-in').modal('show');
+            }
+          }else{
+            alert('Mohon isi alasan keterlambatan anda!');
+          }
+          
+        }
         function getApiLocationAddress(currentPosition) {
           //URL API
           var bdcApi = "https://api.bigdatacloud.net/data/reverse-geocode-client";
@@ -699,9 +750,11 @@
             getDate();
             getApiLocationAddress();
 
-            document.getElementById('display_wfo_wfh').style = "display:none";
+            document.getElementById('display_wfo_wfa').style = "display:none";
             document.getElementById('display_shift').style = "display:none";
-            
+            $('#modal-terlambat').modal({backdrop: 'static', keyboard: false})  
+
+            $('#modal-check-in').modal({backdrop: 'static', keyboard: false})  
             
           });
 
@@ -751,8 +804,6 @@
             //SPLIT RESULT READ QR
             let strDecodedText = decodedText;
             strDecodedText = strDecodedText.split(";");
-            // document.getElementById('lat_kantor').value = strDecodedText[0];
-            // document.getElementById('long_kantor').value = strDecodedText[1];
             document.getElementById('nama_kantor').value = strDecodedText[2];
             //CALCULATE DISTANCE DEVICE WITH QR (SELISIH)
             calculateDistance(currentPosition, strDecodedText);
@@ -764,8 +815,8 @@
 
         var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250});
         html5QrcodeScanner.render(onScanSuccess);
+
         function confirmCheckOut(){
-          
           Swal.fire({
               title: "Apakah anda yakin?",
               text: "Anda akan check out dari kantor",
