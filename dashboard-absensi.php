@@ -296,9 +296,6 @@
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['end']);
                                     array_push($arrayShift, $arrayCurrentShift);
                                   }
-                                  // print_r($arrayShift);
-                                  // echo count($arrayShift);
-                                  // print_r($arrayShift[1][1]);
                             ?>
                             
                             <div class="row mb-3" id="display_shift">
@@ -520,10 +517,17 @@
     <?php
       $sqlTableAbsensiLast = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
       $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
+      $timeDifferent = null;
       if ($dataTableAbsensiLast['id']==null){
         $statusCheckin = "begin";
       }else{
         $statusCheckin = $dataTableAbsensiLast['check_out'];
+        if ($statusCheckin==null){
+          $timestampData = strtotime($dataTableAbsensiLast['check_in']);
+          $timestampNow = strtotime(date('Y-m-d H:i:sa'));
+          $timeDifferent = $timestampNow-$timestampData;
+        }
+
         
       }
 
@@ -565,12 +569,20 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     
     <script type="text/javascript">
-
+        // console.log()
         var status_checkin = "<?php echo $statusCheckin; ?>";
+        var bedaWaktu = "<?php echo $timeDifferent; ?>";
         if (!status_checkin){
-          document.getElementById("checked-in").style.display = "show";
-          document.getElementById("card-check-in").style.display = "none";
-          document.getElementById("rejected-check-in").style.display = "none";
+          //cek apakah jika lupa checkout sudah 12 jam dari waktu terakhir checkin nya atau belum
+          if (bedaWaktu>=21600){
+            document.getElementById("checked-in").style.display = "none";
+            document.getElementById("card-check-in").style.display = "show";
+            document.getElementById("rejected-check-in").style.display = "none";
+          }else{
+            document.getElementById("checked-in").style.display = "show";
+            document.getElementById("card-check-in").style.display = "none";
+            document.getElementById("rejected-check-in").style.display = "none";
+          }
         } else{
           document.getElementById("checked-in").style.display = "none";
           document.getElementById("card-check-in").style.display = "show";
