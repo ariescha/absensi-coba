@@ -328,7 +328,7 @@
                                   $arrayShift = [];
                                   while ($jadwalShiftFetch = mysqli_fetch_array($jadwalShift)){
                                     $arrayCurrentShift = [];
-                                    array_push($arrayCurrentShift, $jadwalShiftFetch['title']);
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['code']);
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['start']);
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['end']);
                                     array_push($arrayShift, $arrayCurrentShift);
