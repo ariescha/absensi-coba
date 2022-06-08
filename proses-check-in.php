@@ -15,7 +15,7 @@
       die();
     }
 
-
+    //print_r($post);
     $query = "";
 
     $shift = $post['jadwal_shift'];
@@ -244,5 +244,4 @@
     }
   $ex = mysql_query($query);
   header("location: /mydata-trx/modul/absensi-dev/dashboard-absensi.php");	
-
 ?>

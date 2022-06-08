@@ -180,6 +180,9 @@
                             <span id="notif-status-nda"></span><br>
                             <form id="form-check-out" action="proses-check-out.php" method="POST">
                               <input type="hidden" id="lokasi_check_out" name="lokasi_check_out">
+                              <input type="hidden" id="longitude_check_out" name="longitude_check_out">
+                              <input type="hidden" id="latitude_check_out" name="latitude_check_out">
+
                               <button type="button" id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
                             </form>
                         </div>
@@ -288,6 +291,28 @@
                                   >
                               </div>
                             </div>
+                            <div class="row mb-3" style="display:none">
+                              <label class="col-sm-4 col-form-label" for="longitude-check-in">Longitude</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="longitude-check-in"
+                                    name="longitude-check-in"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                            </div>
+                            <div class="row mb-3" style="display:none">
+                              <label class="col-sm-4 col-form-label" for="latitude-check-in">Latitude</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="latitude-check-in"
+                                    name="latitude-check-in"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                            </div>
                             <div class="row mb-3">
                               <label class="col-sm-4 col-form-label" for="basic-default-name">Operasional/Non-Operasional</label>
                               <div class="col-sm-8" onclick="check_display_operasional()" required>
@@ -315,9 +340,9 @@
                               <div class="col-sm-8">
                                 <select class="form-control" id="jadwal_shift" name="jadwal_shift" required>
                                   <option value="" disabled selected>Pilih Shift</option>
-                                  <option value="<?php echo $arrayShift[2][1] ?>" >Shift 1</option>
-                                  <option value="<?php echo $arrayShift[3][1] ?>" >Shift 2</option>
-                                  <option value="<?php echo $arrayShift[4][1] ?>" >Shift 3</option>
+                                  <option value="<?php echo $arrayShift[1][1] ?>" >Shift 1</option>
+                                  <option value="<?php echo $arrayShift[2][1] ?>" >Shift 2</option>
+                                  <option value="<?php echo $arrayShift[3][1] ?>" >Shift 3</option>
                                 </select>
                               </div>
                             </div>
@@ -724,7 +749,8 @@
                     + "&longitude=" + position.coords.longitude
                     + "&localityLanguage=id";
                     getApi(bdcApi);
-                    
+                    document.getElementById('longitude_check_out').value = position.coords.longitude;
+                    document.getElementById('latitude_check_out').value = position.coords.latitude;
             },
             (err) => { getApi(bdcApi); },
             {
@@ -803,6 +829,10 @@
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var resultFinal = radius * c; // Distance in km
           console.log(resultFinal);
+          document.getElementById('longitude-check-in').value = long1;
+          document.getElementById('latitude-check-in').value = lat1;
+          document.getElementById('longitude_check_out').value = long1;
+          document.getElementById('latitude_check_out').value = lat1;
           if(resultFinal <= 100){
             document.getElementById('form-check-in').submit();
           }else if (resultFinal > 100){
@@ -820,6 +850,8 @@
                 }
             });
           }
+          
+
         }
         function deg2rad(deg) {
           return deg * (Math.PI/180)
