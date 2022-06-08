@@ -74,7 +74,7 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="assets/js/config.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
-    <script src="html5-qrcode.min.js"></script>
+    <script src="qrcode-gen/html5-qrcode.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../../assets/sweetalert/sweetalert2.css" />  
     <script type="text/javascript" src="../../assets/sweetalert/sweetalert2.js"></script>  
 
