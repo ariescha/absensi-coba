@@ -334,15 +334,14 @@
                                     array_push($arrayShift, $arrayCurrentShift);
                                   }
                             ?>
-                            
                             <div class="row mb-3" id="display_shift">
                               <label class="col-sm-4 col-form-label" for="basic-default-name">Jadwal Shift</label>
                               <div class="col-sm-8">
                                 <select class="form-control" id="jadwal_shift" name="jadwal_shift" required>
                                   <option value="" disabled selected>Pilih Shift</option>
-                                  <option value="<?php echo $arrayShift[1][1] ?>" >Shift 1</option>
-                                  <option value="<?php echo $arrayShift[2][1] ?>" >Shift 2</option>
-                                  <option value="<?php echo $arrayShift[3][1] ?>" >Shift 3</option>
+                                  <option value="<?php echo $arrayShift[1][1] ?>" id="shift_1" >Shift 1</option>
+                                  <option value="<?php echo $arrayShift[2][1] ?>" id="shift_2" >Shift 2</option>
+                                  <option value="<?php echo $arrayShift[3][1] ?>" id="shift_3">Shift 3</option>
                                 </select>
                               </div>
                             </div>
@@ -809,6 +808,7 @@
             today = dd + ' ' + monthNames[mm] + ' ' + yyyy;
             document.getElementById('tanggal-check-in').value = today;
           }
+
           $(document).ready(function(){
             // we call the function
             
@@ -817,9 +817,53 @@
 
             document.getElementById('display_wfo_wfa').style = "display:none";
             document.getElementById('display_shift').style = "display:none";
-            $('#modal-terlambat').modal({backdrop: 'static', keyboard: false})  
+            $('#modal-terlambat').modal({backdrop: 'static', keyboard: false})  ;
+            $('#modal-check-in').modal({backdrop: 'static', keyboard: false})  ;
+            
+            //Hide shift
+            var shift_1 = '<?php echo $arrayShift[1][2]?>'; 
+            var shift_2 = '<?php echo $arrayShift[2][2]?>'; 
+            var shift_3 = '<?php echo $arrayShift[3][2]?>';
+            var date_now = new Date();
 
-            $('#modal-check-in').modal({backdrop: 'static', keyboard: false})  
+             
+            var date_shift_1 = new Date();
+            var date_shift_2 = new Date();
+            var date_shift_3 = new Date();
+
+
+            var check_out_shift_1 = shift_1.split(':');
+            var check_out_shift_2 = shift_2.split(':');
+            var check_out_shift_3 = shift_3.split(':');
+
+            date_shift_1.setHours(check_out_shift_1[0],check_out_shift_1[1]);
+            date_shift_2.setHours(check_out_shift_2[0],check_out_shift_2[1]);
+            date_shift_3.setHours(check_out_shift_3[0],check_out_shift_3[1]);
+
+            var selisih_1 = date_now.getTime()-date_shift_1.getTime();
+            selisih1 = selisih_1/(1000*60*60);
+            var selisih_2 = date_now.getTime()-date_shift_2.getTime();
+            selisih2 = selisih_2/(1000*60*60);
+            var selisih_3 = date_now.getTime()-date_shift_3.getTime();
+            selisih3 = selisih_3/(1000*60*60);
+
+            if(selisih_1 > 0){
+              document.getElementById("shift_1").hidden = true;
+            }else{
+              document.getElementById("shift_1").hidden = false;
+            }
+            
+            if(selisih_2 > 0){
+              document.getElementById("shift_2").hidden = true;
+            }else{
+              document.getElementById("shift_2").hidden = false;
+            }
+            
+            if(selisih_3 > 0){
+              document.getElementById("shift_3").hidden = true;
+            }else{
+              document.getElementById("shift_3").hidden = false;
+            }
             
           });
 
