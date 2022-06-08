@@ -1,7 +1,7 @@
 <?php 
-	  include_once("../../config/config.php");
-    include_once("../../config/fungsi_indotgl.php");  
-    include_once("../../library/buildquery.php");
+	  include_once("../../../config/config.php");
+    include_once("../../../config/fungsi_indotgl.php");  
+    include_once("../../../library/buildquery.php");
     session_start();
 
     $namalengkap = $_SESSION['namalengkap'];	
@@ -25,7 +25,7 @@
   class="light-style layout-menu-fixed"
   dir="ltr"
   data-theme="theme-default"
-  data-assets-path="assets/"
+  data-../assets-path="../assets/"
   data-template="vertical-menu-template-free"
 >
   <head>
@@ -40,7 +40,7 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/img/fingerprint.png" />
+    <link rel="icon" type="image/x-icon" href="../assets/img/fingerprint.png" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,29 +51,29 @@
     />
 
     <!-- Icons. Uncomment required icon fonts -->
-    <link rel="stylesheet" href="assets/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="assets/css/demo.css" />
+    <link rel="stylesheet" href="../assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="../assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="../assets/css/demo.css" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
-    <link rel="stylesheet" href="assets/vendor/libs/apex-charts/apex-charts.css" />
+    <link rel="stylesheet" href="../assets/vendor/libs/apex-charts/apex-charts.css" />
 
     <!-- Page CSS -->
 
     <!-- Helpers -->
-    <script src="assets/vendor/js/helpers.js"></script>
-    <script src="assets/js/qrcode.min.js"></script>
+    <script src="../assets/vendor/js/helpers.js"></script>
+    <script src="../assets/js/qrcode.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="assets/js/config.js"></script>
+    <script src="../assets/js/config.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
     <script src="html5-qrcode.min.js"></script>
     <style>
@@ -158,8 +158,8 @@
                   <div class="card" style="display:show">
                     <div class="d-flex align-items-end row">
                         <div class="card-header">
-                              <img src="assets/img/logo-jasa-marga.jpg" alt="" style="width=110px;height:45px;">
-                              <img src="assets/img/logo-jmto.png" alt="" style="width=100px;height:40px;">
+                              <img src="../assets/img/logo-jasa-marga.jpg" alt="" style="width=110px;height:45px;">
+                              <img src="../assets/img/logo-jmto.png" alt="" style="width=100px;height:40px;">
 
                         </div>
                         <?php 
@@ -215,7 +215,7 @@
                     height: 300,
                     type: "svg",
                     data: "Kantor Pusat Jasa Marga;0290382323;9139183",
-                    image: "assets/img/logo-jmto.png",
+                    image: "../assets/img/logo-jmto.png",
                     dotsOptions: {
                         color: "#104d9f",
                         type: "rounded"
@@ -240,23 +240,23 @@
     
 
     <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
-    <script src="assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="assets/vendor/libs/popper/popper.js"></script>
-    <script src="assets/vendor/js/bootstrap.js"></script>
-    <script src="assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <!-- build:js ../assets/vendor/js/core.js -->
+    <script src="../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../assets/vendor/libs/popper/popper.js"></script>
+    <script src="../assets/vendor/js/bootstrap.js"></script>
+    <script src="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
 
-    <script src="assets/vendor/js/menu.js"></script>
+    <script src="../assets/vendor/js/menu.js"></script>
     <!-- endbuild -->
 
     <!-- Vendors JS -->
-    <script src="assets/vendor/libs/apex-charts/apexcharts.js"></script>
+    <script src="../assets/vendor/libs/apex-charts/apexcharts.js"></script>
 
     <!-- Main JS -->
-    <script src="assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 
     <!-- Page JS -->
-    <script src="assets/js/dashboards-analytics.js"></script>
+    <script src="../assets/js/dashboards-analytics.js"></script>
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>

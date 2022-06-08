@@ -4,9 +4,9 @@
     ini_set('display_startup_errors', TRUE);
     session_start();
 
-    include_once("../../config/config.php");
-    include_once("../../config/fungsi_indotgl.php");  
-    include_once("../../library/buildquery.php");
+    include_once("../../../config/config.php");
+    include_once("../../../config/fungsi_indotgl.php");  
+    include_once("../../../library/buildquery.php");
 
 
     $post = $_REQUEST;
@@ -25,7 +25,7 @@
     $created_date = date('Y-m-d');
     
     $notes = null;
-    print_r ($post);
+    
 
     if($post!=""){
      
@@ -34,6 +34,6 @@
       
     }
     $ex = mysql_query($query);
-    header("location: /mydata-trx/modul/absensi-dev/qrcode-generator.php");
+    header("location: /mydata-trx/modul/absensi-dev/qrcode-gen/qrcode-generator.php");
     ?>	
 
