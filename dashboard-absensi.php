@@ -156,36 +156,7 @@
           <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row"  id="rejected-check-in">
-                <div class="col-lg-12 mb-4 order-0">
-                  <div class="card">
-                    <div class="d-flex align-items-end row">
-                      <div class="col-sm-8">
-                        <div class="card-body">
-                          <h4 class="card-title text-primary">Check In Gagal ⛔</h4>
-                            <p class="mb-4">
-                            Lokasi anda terlalu jauh dari kantor. Mohon mendekat dan coba lagi.
-                            </p>
-                          <a href="javascript:;" id="button-check-out" class="btn btn-sm btn-primary">Check In</a>
-                        </div>
-                      </div>
-                      
-                      <div class="col-sm-2 text-center text-sm-left">
-                        <div class="card-body pb-0 px-0 px-md-4">
-                          <img
-                            src="assets/img/illustrations/sorry.png"
-                            height="200"
-                            alt="View Badge User"
-                            data-app-dark-img="illustrations/sorry.png"
-                            data-app-light-img="illustrations/sorry.png"
-                          />
-                        </div>
-                      </div>
-                      
-                    </div>
-                  </div>
-                  </div>
-                </div>
+            
 
                 <?php
                   $sqlTableAbsensiCard = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
@@ -605,15 +576,13 @@
         if (status_checkin==0){
           document.getElementById("checked-in").style.display = "show";
           document.getElementById("card-check-in").style.display = "none";
-          document.getElementById("rejected-check-in").style.display = "none";
           document.getElementById("checked-out").style.display = "none";
           
         } else{
           if(!cekDataLast){
             document.getElementById("checked-in").style.display = "none";
             document.getElementById("card-check-in").style.display = "show";
-            document.getElementById("rejected-check-in").style.display = "none";
-            document.getElementById("checked-out").style.display = "none";
+              document.getElementById("checked-out").style.display = "none";
           }else{
             var timeBedaJ = "<?php echo $timeBeda; ?>";
             var checkOutTime = "<?php echo $dataTableAbsensiForTime['check_out'] ?>"
@@ -621,8 +590,7 @@
               //kalau misalkan waktunya belum 22 jam
               document.getElementById("checked-in").style.display = "none";
               document.getElementById("card-check-in").style.display = "none";
-              document.getElementById("rejected-check-in").style.display = "none";
-              document.getElementById("checked-out").style.display = "show";
+                  document.getElementById("checked-out").style.display = "show";
               if (!checkOutTime){
                 document.getElementById("checked-out-msg-1").style.display = "none";
                 document.getElementById("checked-out-msg-2").style.display = "show";
@@ -635,8 +603,7 @@
               //kalau sudah lebih 22 jam
               document.getElementById("checked-in").style.display = "none";
               document.getElementById("card-check-in").style.display = "show";
-              document.getElementById("rejected-check-in").style.display = "none";
-              document.getElementById("checked-out").style.display = "none";
+                  document.getElementById("checked-out").style.display = "none";
             }
           }          
         }
@@ -844,12 +811,14 @@
               type: 'error',
               title: 'Check in gagal!',
               text: 'Lokasi anda terdeteksi tidak dalam area kantor.',
-              showConfirmButton: true
-            })
-            document.getElementById('form-check-in').reset();
-            getDate();
-
-
+              showConfirmButton: true,
+              confirmButtonText: 'Coba lagi',
+            }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+                if (result['value']==true) {
+                  location.replace('dashboard-absensi.php');
+                }
+            });
           }
         }
         function deg2rad(deg) {
