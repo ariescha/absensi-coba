@@ -328,7 +328,7 @@
                                   $arrayShift = [];
                                   while ($jadwalShiftFetch = mysqli_fetch_array($jadwalShift)){
                                     $arrayCurrentShift = [];
-                                    array_push($arrayCurrentShift, $jadwalShiftFetch['code']);
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['title']);
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['start']);
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['end']);
                                     array_push($arrayShift, $arrayCurrentShift);
@@ -658,7 +658,8 @@
             if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
               //Karyawan operasional, munculin modal scanner
               if(document.getElementById('jadwal_shift').value !== ""){
-                  var today = new Date();
+                  var todaywib = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                  var today = new Date(todaywib);
                   var jadwal_check_in = new Date();
                   var jadwal_pilihan = document.getElementById('jadwal_shift').value;
                   var array = jadwal_pilihan.split(':');
@@ -678,7 +679,8 @@
             }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
               if(document.getElementById('wfo').checked == true && document.getElementById('wfa').checked == false ){
                 //Karyawan non operasional wfo, munculin modal scanner
-                  var today = new Date();
+                var todaywib = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                  var today = new Date(todaywib);
                   var jadwal_check_in = new Date();
                   var jadwal_pilihan = "08:00";
                   var array = jadwal_pilihan.split(':');
@@ -696,14 +698,19 @@
               }
               else if(document.getElementById('wfo').checked == false && document.getElementById('wfa').checked == true ){
                 //Karyawan non operasional wfa, langsung submit form
-     
-                var today = new Date();
+                var todaywib = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                  var today = new Date(todaywib);
                   var jadwal_check_in = new Date();
                   var jadwal_pilihan = "08:00";
                   var array = jadwal_pilihan.split(':');
                   jadwal_check_in.setHours(array[0],array[1]);
                   var selisih = today.getTime()-jadwal_check_in.getTime();
                   selisih1 = selisih/(1000*60*60);
+                  navigator.geolocation.getCurrentPosition(function(position) {
+                  var currentPosition = position;
+                  //CALL API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
+                  getApiLocationAddress(currentPosition)});
+                  
                   if(selisih>0){
                     document.getElementById("alasan_terlambat").required = true;
 
