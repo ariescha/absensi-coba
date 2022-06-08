@@ -33,7 +33,6 @@
         values('$nama_lokasi','$longitude','$latitude','$created_date') ";
       
     }
-  // echo $query;
     $ex = mysql_query($query);
     header("location: /mydata-trx/modul/absensi-dev/qrcode-generator.php");
     ?>	

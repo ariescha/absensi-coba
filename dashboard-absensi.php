@@ -167,8 +167,6 @@
                             Lokasi anda terlalu jauh dari kantor. Mohon mendekat dan coba lagi.
                             </p>
                           <a href="javascript:;" id="button-check-out" class="btn btn-sm btn-primary">Check In</a>
-
-                          <!-- <a href="javascript:;" class="btn btn-sm btn-primary" onclick="checkout()">Check Out</a> -->
                         </div>
                       </div>
                       
@@ -460,7 +458,6 @@
                     $sqlTableAbsensi = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 7");
                     
                     $counter = 1;
-                    // $dataTableAbsensiForOther = mysqli_fetch_array($sqlTableAbsensi);
                     while ($dataTableAbsensi = mysqli_fetch_array($sqlTableAbsensi)){
 
                       echo "<tr style='text-align:center'>";
@@ -529,24 +526,7 @@
                   , IT Jasa Marga Tollroad Operator
                   <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
                 </div>
-                <div>
-                  <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
-                  <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
-
-                  <a
-                    href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Documentation</a
-                  >
-
-                  <a
-                    href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Support</a
-                  >
-                </div>
+                
               </div>
             </footer>
             <!-- / Footer -->
@@ -581,9 +561,7 @@
         //auto checkout jika lebih dari 12 jam
         if ($timeDifferent>=21600){
           mysql_query("UPDATE trx_absensi SET status_checkin=1 WHERE id='$absensiId'");
-          // echo "jalannnnn";
         }
-        // echo $timeDifferent;
       }
       
     ?>
@@ -598,15 +576,6 @@
       echo $timeBeda;
     ?>
     <!-- / Layout wrapper -->
-
-    <!-- <div class="buy-now">
-      <a
-        href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-        target="_blank"
-        class="btn btn-danger btn-buy-now"
-        >Upgrade to Pro</a
-      >
-    </div> -->
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
@@ -633,8 +602,6 @@
     <script type="text/javascript">
         var status_checkin = "<?php echo $statusCheckin; ?>";
         var cekDataLast = "<?php echo $dataTableAbsensiLast['id']; ?>";
-        // console.log(cekDataLast);
-        // console.log("fauziii");
         if (status_checkin==0){
           document.getElementById("checked-in").style.display = "show";
           document.getElementById("card-check-in").style.display = "none";
@@ -650,7 +617,7 @@
           }else{
             var timeBedaJ = "<?php echo $timeBeda; ?>";
             var checkOutTime = "<?php echo $dataTableAbsensiForTime['check_out'] ?>"
-            if (timeBedaJ<=380){
+            if (timeBedaJ<=79200){
               //kalau misalkan waktunya belum 22 jam
               document.getElementById("checked-in").style.display = "none";
               document.getElementById("card-check-in").style.display = "none";
@@ -791,9 +758,6 @@
                     + "&localityLanguage=id";
                     getApi(bdcApi);
                     
-              // document.getElementById('lat_perangkat').value = currentPosition.coords.latitude;
-              // document.getElementById('long_perangkat').value = currentPosition.coords.longitude;
-
             },
             (err) => { getApi(bdcApi); },
             {
@@ -837,7 +801,7 @@
           function getDate(){
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth()); //January is 0!
+            var mm = String(today.getMonth());
             var yyyy = today.getFullYear();
             const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
               "Juli", "Agustus", "September", "Oktober", "November", "Desember"
@@ -871,7 +835,6 @@
           var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(strDecodedText[0])) * Math.sin(dLong/2) * Math.sin(dLong/2); 
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var resultFinal = radius * c; // Distance in km
-          //document.getElementById('selisih').value = resultFinal;
           console.log(resultFinal);
           if(resultFinal <= 100){
             document.getElementById('form-check-in').submit();

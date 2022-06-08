@@ -319,24 +319,7 @@
                   , IT Jasa Marga Tollroad Operator
                   <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
                 </div>
-                <div>
-                  <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
-                  <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
-
-                  <a
-                    href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Documentation</a
-                  >
-
-                  <a
-                    href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Support</a
-                  >
-                </div>
+                
               </div>
             </footer>
             <!-- / Footer -->
@@ -352,15 +335,6 @@
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
     <!-- / Layout wrapper -->
-
-    <!-- <div class="buy-now">
-      <a
-        href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-        target="_blank"
-        class="btn btn-danger btn-buy-now"
-        >Upgrade to Pro</a
-      >
-    </div> -->
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
@@ -444,9 +418,6 @@
                     + "&localityLanguage=id";
                     getApi(bdcApi);
                     
-              // document.getElementById('lat_perangkat').value = currentPosition.coords.latitude;
-              // document.getElementById('long_perangkat').value = currentPosition.coords.longitude;
-
             },
             (err) => { getApi(bdcApi); },
             {
@@ -518,7 +489,6 @@
           var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(strDecodedText[0])) * Math.sin(dLong/2) * Math.sin(dLong/2); 
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var resultFinal = radius * c; // Distance in km
-          //document.getElementById('selisih').value = resultFinal;
           if(resultFinal <= 2){
             document.getElementById('form-check-in').submit();
           }else{
@@ -541,8 +511,6 @@
             //SPLIT RESULT READ QR
             let strDecodedText = decodedText;
             strDecodedText = strDecodedText.split(";");
-            // document.getElementById('lat_kantor').value = strDecodedText[0];
-            // document.getElementById('long_kantor').value = strDecodedText[1];
             document.getElementById('nama_kantor').value = strDecodedText[2];
             //CALCULATE DISTANCE DEVICE WITH QR (SELISIH)
             calculateDistance(currentPosition, strDecodedText);
