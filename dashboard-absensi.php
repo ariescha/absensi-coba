@@ -476,7 +476,7 @@
                         <div class="modal-title"><h5>SCAN BARCODE</h5></div>
                       </div>
                         <div class="modal-body">
-                          <div style="width: 500px" id="qr-reader"></div>
+                          <div style="width: auto" id="qr-reader"></div>
                          
                           </div>
                         </div>
