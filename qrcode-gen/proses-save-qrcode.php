@@ -22,7 +22,7 @@
     $nama_lokasi =  $post['nama_lokasi'];
     $longitude = $post['longitude'];
     $latitude = $post['latitude'];
-    $created_date = date('Y-m-d');
+    $created_date = date('Y-m-d H:i:sa');
     
     $notes = null;
     

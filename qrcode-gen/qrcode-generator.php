@@ -246,7 +246,6 @@
             <div class="card">
               <div class="card-header">
                 <h4 class="title">Data QR Code</h4>
-                <h6 class="sub-title">Berikut adalah rekapitulasi kehadiranmu selama 7 hari terakhir.</h6>
               </div>
               
               <div class="table-responsive text-nowrap">
@@ -264,7 +263,7 @@
                   </thead>
                   <tbody class="table-border-bottom-0">
                   <?php 
-                  $sqlTableQRCode = mysql_query("select * from saved_qrcode_list");
+                  $sqlTableQRCode = mysql_query("select * from saved_qrcode_list order by tanggal desc");
 
                   $counter = 1;
                   while ($dataTableQRCode = mysqli_fetch_array($sqlTableQRCode)){
@@ -290,20 +289,7 @@
                 </div>
               </div>
             </div>
-            <!-- Modal scan -->
-            <div class="modal fade" id="modal-check-in" aria-labelledby="modalToggleLabel" tabindex="-1" style="display: none" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <div class="modal-title"><h5>SCAN BARCODE</h5></div>
-                      </div>
-                        <div class="modal-body">
-                          <div style="width: 500px" id="qr-reader"></div>
-                         
-                          </div>
-                        </div>
-                    </div>
-                </div>
+            
 </html>
             <script type="text/javascript">
                
@@ -360,168 +346,6 @@
 
     <script type="text/javascript">
 
-        //API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
-          const Http = new XMLHttpRequest();
-
-          function check_display_operasional(){
-            if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
-              //Karyawan Operasional, menampilkan radio button shift
-              document.getElementById('display_wfo_wfh').style = "display:none";
-              document.getElementById('display_shift').style = "display:show";
-              document.getElementById('display_wfo_wfh').required = false;
-              document.getElementById('display_shift').required = true;
-
-            }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
-              //Karyawan Non Operasional, menampilkan radio button wfo/wfh
-              document.getElementById('display_wfo_wfh').style = "display:show";
-              document.getElementById('display_shift').style = "display:none";
-              document.getElementById('display_wfo_wfh').required = true;
-              document.getElementById('display_shift').required = false;
-            }
-          }
-          
-          function check_in_check(){
-            if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
-              //Karyawan operasional, munculin modal scanner
-              if(document.getElementById('jadwal_shift').value !== ""){
-                  $('#modal-check-in').modal('show'); 
-                }else{
-                  alert('Mohon isi jadwal shift anda!')
-                }
-            }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
-              if(document.getElementById('wfo').checked == true && document.getElementById('wfh').checked == false ){
-                //Karyawan non operasional wfo, munculin modal scanner
-                
-                  $('#modal-check-in').modal('show'); 
-                
-              }
-              else if(document.getElementById('wfo').checked == false && document.getElementById('wfh').checked == true ){
-                //Karyawan non operasional wfH, langsung submit form
-                console.log('form-check-in-submit');
-                document.getElementById('form-check-in').submit();
-              }
-            
-            }else{
-              alert('Mohon isi status karyawan operasional/non');
-            }
-          }
-        function getApiLocationAddress(currentPosition) {
-          //URL API
-          var bdcApi = "https://api.bigdatacloud.net/data/reverse-geocode-client";
-           
-            navigator.geolocation.getCurrentPosition(
-            (position) => {
-                bdcApi = bdcApi
-                    + "?latitude=" + position.coords.latitude
-                    + "&longitude=" + position.coords.longitude
-                    + "&localityLanguage=id";
-                    getApi(bdcApi);
-                    
-            },
-            (err) => { getApi(bdcApi); },
-            {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-            });
-
-          //PROCESS GET API
-            function getApi(bdcApi) {
-              Http.open("GET", bdcApi);
-              Http.send();
-              Http.onreadystatechange = function () {
-                  if (this.readyState == 4 && this.status == 200) {
-                      console.log(this.responseText);
-              //PARSE TO JSON AND CHANGE POSITION ARRAY
-                      const resultParse = JSON.parse(this.responseText);
-                      var arrayAddress = [];
-                      for (var i = resultParse.localityInfo.administrative.length-1, l = 0; i >= l; i--) {
-                          var obj = resultParse.localityInfo.administrative[i];
-                          arrayAddress.push(obj.name);
-                      }
-
-              //change position kelurahan and RW
-                      function arraymove(arr, fromIndex, toIndex) {
-                          var element = arr[fromIndex];
-                          arr.splice(fromIndex, 1);
-                          arr.splice(toIndex, 0, element);
-                          return arr;
-                      }
-                      var arrayAddressFinal = arraymove(arrayAddress, 0, 1);
-
-              //return to view
-              document.getElementById('lokasi_perangkat').innerHTML = arrayAddressFinal.join(", ");
-                  }
-              };
-            }
-          }
-        
-          $(document).ready(function(){
-            // we call the function
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1); //January is 0!
-            var yyyy = today.getFullYear();
-            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
-              "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-            ];
-            today = dd + ' ' + monthNames[mm] + ' ' + yyyy;
-            document.getElementById('tanggal-check-in').value = today;
-
-            getApiLocationAddress();
-
-            document.getElementById('display_wfo_wfh').style = "display:none";
-            document.getElementById('display_shift').style = "display:none";
-            
-            
-          });
-
-        
-        //FUNCTION CALCULATE DISTANCE DEVICE AND QR (SELISIH)
-        function calculateDistance(currentPosition, strDecodedText){
-          let lat1 = currentPosition.coords.latitude;
-          let long1 = currentPosition.coords.longitude;
-          var radius = 6371; // Radius of the earth in km
-          var dLat = deg2rad(strDecodedText[0]-lat1);  // deg2rad below
-          var dLong = deg2rad(strDecodedText[1]-long1); 
-
-          var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(strDecodedText[0])) * Math.sin(dLong/2) * Math.sin(dLong/2); 
-          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-          var resultFinal = radius * c; // Distance in km
-          if(resultFinal <= 2){
-            document.getElementById('form-check-in').submit();
-          }else{
-            alert('Lokasi anda terlalu jauh dari kantor');
-          }
-        }
-        function deg2rad(deg) {
-          return deg * (Math.PI/180)
-        }
-
-        //scanner function (UTAMA)
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Code scanned = ${decodedText}`, decodedResult);
-          
-          navigator.geolocation.getCurrentPosition(function(position) {
-            var currentPosition = position;
-            //CALL API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
-            getApiLocationAddress(currentPosition);
-
-            //SPLIT RESULT READ QR
-            let strDecodedText = decodedText;
-            strDecodedText = strDecodedText.split(";");
-            document.getElementById('nama_kantor').value = strDecodedText[2];
-            //CALCULATE DISTANCE DEVICE WITH QR (SELISIH)
-            calculateDistance(currentPosition, strDecodedText);
-
-            html5QrcodeScanner.clear();
-          });
-
-        }
-
-        var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250});
-        html5QrcodeScanner.render(onScanSuccess);
-       
             var qrcode = new QRCodeStyling({
                 width: 300,
                 height: 300,
