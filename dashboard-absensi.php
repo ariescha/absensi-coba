@@ -889,11 +889,14 @@
             document.getElementById('form-check-in').submit();
           }else if (resultFinal > 100){
             $('#modal-check-in').modal('hide'); 
+            $('#modal-terlambat').modal('hide'); 
+
             Swal.fire({
               type: 'error',
               title: 'Check in gagal!',
               text: 'Lokasi anda terdeteksi tidak dalam area kantor.',
               showConfirmButton: true,
+              allowOutsideClick: false,
               confirmButtonText: 'Coba lagi',
             }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
