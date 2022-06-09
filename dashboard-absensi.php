@@ -328,7 +328,7 @@
                                   $arrayShift = [];
                                   while ($jadwalShiftFetch = mysqli_fetch_array($jadwalShift)){
                                     $arrayCurrentShift = [];
-                                    array_push($arrayCurrentShift, $jadwalShiftFetch['title']);
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['code']);
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['start']);
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['end']);
                                     array_push($arrayShift, $arrayCurrentShift);
@@ -691,7 +691,6 @@
                     $('#modal-terlambat').modal('show'); 
                   }else{
                     document.getElementById("alasan_terlambat").required = false;
-
                     $('#modal-check-in').modal('show'); 
                   }
               }
@@ -757,6 +756,8 @@
                     getApi(bdcApi);
                     document.getElementById('longitude_check_out').value = position.coords.longitude;
                     document.getElementById('latitude_check_out').value = position.coords.latitude;
+                    document.getElementById('longitude-check-in').value = position.coords.longitude;
+                    document.getElementById('latitude-check-in').value = position.coords.latitude;
             },
             (err) => { getApi(bdcApi); },
             {

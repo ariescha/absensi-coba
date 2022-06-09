@@ -18,14 +18,18 @@
     $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
     $absensiId = $dataTableAbsensiLast['id'];
 
+    // print_r($_POST);
+
     if ($dataTableAbsensiLast['status_checkin']==1){
         header("location: /mydata-trx/modul/absensi-dev/dashboard-absensi.php");
     }else{
         date_default_timezone_set("Asia/Bangkok");
         $checkoutLocation = $_POST['lokasi_check_out'];
         $checkoutTime = date('Y-m-d H:i:s');
-        //print_r($_REQUEST);
-        $query = "UPDATE trx_absensi SET check_out_location='$checkoutLocation', check_out='$checkoutTime', updated_at='$checkoutTime', status_checkin=1 WHERE id='$absensiId'";
+        $lat_checkout = $_POST['latitude_check_out'];
+        $long_checkout = $_POST['longitude_check_out'];
+
+        $query = "UPDATE trx_absensi SET lat_check_out='$lat_checkout', long_check_out='$long_checkout', check_out_location='$checkoutLocation', check_out='$checkoutTime', updated_at='$checkoutTime', status_checkin=1 WHERE id='$absensiId'";
 
         $ex = mysql_query($query);
         header("location: /mydata-trx/modul/absensi-dev/dashboard-absensi.php");
