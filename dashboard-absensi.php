@@ -499,9 +499,10 @@
                       <div class="modal-header">
                         <div class="modal-title"><h5>SCAN BARCODE</h5></div>
                       </div>
-                        <div class="modal-body">
-                          <div style="width: auto" id="qr-reader"></div>
-                         
+                      <div class="modal-body">
+                          <center><div style="width: auto" id="qr-reader" type="hidden"></div>
+                          <button class="btn-sm btn-primary" type="button" id="start-camera" onclick="startCamera()">Scan QR</button>
+                          </center>
                           </div>
                         </div>
                     </div>
@@ -913,9 +914,9 @@
         }
 
         //scanner function (UTAMA)
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Code scanned = ${decodedText}`, decodedResult);
-            
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+            /* handle success */
             navigator.geolocation.getCurrentPosition(function(position) {
             var currentPosition = position;
             //CALL API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
@@ -926,15 +927,20 @@
             strDecodedText = strDecodedText.split(";");
             document.getElementById('nama_kantor').value = strDecodedText[2];
             //CALCULATE DISTANCE DEVICE WITH QR (SELISIH)
-            calculateDistance(currentPosition, strDecodedText);
+            calculateDistance(currentPosition, strDecodedText);});
+            console.log(`Code scanned = ${decodedText}`,decodedResult);
+            html5QrCode.stop().then((ignore) => {}).catch((err) => {});};
+        const configqr = { fps: 10 };
 
-            html5QrcodeScanner.clear();
-          });
-
-        }
-
-        var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250});
-        html5QrcodeScanner.render(onScanSuccess);
+        function startCamera(){
+        document.getElementById("qr-reader").style.display="show";
+        document.getElementById("start-camera").style.display="none";
+        Html5Qrcode.getCameras().then(devices => {
+        if (devices && devices.length) {
+            cameraId = devices[0].id;}
+        }).catch(err => {
+        });
+        html5QrCode.start({ facingMode: "environment" }, configqr, qrCodeSuccessCallback);}
 
         function confirmCheckOut(){
           Swal.fire({
