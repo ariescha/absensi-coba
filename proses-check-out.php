@@ -14,24 +14,20 @@
         die();
     }
     $nik = $_SESSION['niklogin'];
-    $sqlTableAbsensiLast = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
+    $sqlTableAbsensiLast = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 1");
     $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
-    $absensiId = $dataTableAbsensiLast['id'];
-
-    // print_r($_POST);
+    $absensiId = $dataTableAbsensiLast['absensi_id'];
 
     if ($dataTableAbsensiLast['status_checkin']==1){
-        header("location: /mydata-trx/modul/absensi-dev/dashboard-absensi.php");
+        header("location: /mydata/modul/absensi-dev/dashboard-absensi.php");
     }else{
         date_default_timezone_set("Asia/Bangkok");
-        $checkoutLocation = $_POST['lokasi_check_out'];
+        $checkoutLocation = null;
         $checkoutTime = date('Y-m-d H:i:s');
-        $lat_checkout = $_POST['latitude_check_out'];
-        $long_checkout = $_POST['longitude_check_out'];
 
-        $query = "UPDATE trx_absensi SET lat_check_out='$lat_checkout', long_check_out='$long_checkout', check_out_location='$checkoutLocation', check_out='$checkoutTime', updated_at='$checkoutTime', status_checkin=1 WHERE id='$absensiId'";
+        $query = "UPDATE absensi_checkin SET checkout_location='$checkoutLocation', checkout_time='$checkoutTime', status_checkin=1 WHERE absensi_id='$absensiId'";
 
         $ex = mysql_query($query);
-        header("location: /mydata-trx/modul/absensi-dev/dashboard-absensi.php");
+        header("location: /mydata/modul/absensi-dev/dashboard-absensi.php");
     }
 ?>
