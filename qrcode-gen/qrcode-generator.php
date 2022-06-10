@@ -138,7 +138,7 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="../../mainmenu.php">
+                      <a class="dropdown-item" href="../../../mainmenu.php">
                         <i class="bx bx-exit me-2"></i>
                         <span class="align-middle">Kembali ke Main Menu</span>
                       </a>

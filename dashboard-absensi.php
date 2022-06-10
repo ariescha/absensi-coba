@@ -74,7 +74,7 @@
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="assets/js/config.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
-    <script src="html5-qrcode.min.js"></script>
+    <script src="qrcode-gen/html5-qrcode.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../../assets/sweetalert/sweetalert2.css" />  
     <script type="text/javascript" src="../../assets/sweetalert/sweetalert2.js"></script>  
 
@@ -116,7 +116,7 @@
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="assets/img/foto.jpg" alt class="w-px-40 h-auto rounded-circle" />
+                      <img src="assets/img/foto.png" alt class="w-px-40 h-auto rounded-circle" />
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -125,7 +125,7 @@
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar avatar-online">
-                              <img src="assets/img/foto.jpg" alt class="w-px-40 h-auto rounded-circle" />
+                              <img src="assets/img/foto.png" alt class="w-px-40 h-auto rounded-circle" />
                             </div>
                           </div>
                           <div class="flex-grow-1">
@@ -156,46 +156,14 @@
           <div class="content-wrapper">
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row"  id="rejected-check-in">
-                <div class="col-lg-12 mb-4 order-0">
-                  <div class="card">
-                    <div class="d-flex align-items-end row">
-                      <div class="col-sm-8">
-                        <div class="card-body">
-                          <h4 class="card-title text-primary">Check In Gagal ⛔</h4>
-                            <p class="mb-4">
-                            Lokasi anda terlalu jauh dari kantor. Mohon mendekat dan coba lagi.
-                            </p>
-                          <a href="javascript:;" id="button-check-out" class="btn btn-sm btn-primary">Check In</a>
-
-                          <!-- <a href="javascript:;" class="btn btn-sm btn-primary" onclick="checkout()">Check Out</a> -->
-                        </div>
-                      </div>
-                      
-                      <div class="col-sm-2 text-center text-sm-left">
-                        <div class="card-body pb-0 px-0 px-md-4">
-                          <img
-                            src="assets/img/illustrations/sorry.png"
-                            height="200"
-                            alt="View Badge User"
-                            data-app-dark-img="illustrations/sorry.png"
-                            data-app-light-img="illustrations/sorry.png"
-                          />
-                        </div>
-                      </div>
-                      
-                    </div>
-                  </div>
-                  </div>
-                </div>
+            
 
                 <?php
-                  $sqlTableAbsensiCard = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 1");
+                  $sqlTableAbsensiCard = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
                   $dataTableAbsensiCard = mysqli_fetch_array($sqlTableAbsensiCard);
-                  // print_r($dataTableAbsensiLast);
-                    $tanggalAbsenCard =  $dataTableAbsensiCard['tgl_absence'];
-                    $checkinTimeCard = $dataTableAbsensiCard['checkin_time'];
-                    $checkinLocationCard = $dataTableAbsensiCard['checkin_location'];
+                  $checkinTimeCard = $dataTableAbsensiCard['check_in'];
+                  $checkinLocationCard = $dataTableAbsensiCard['check_in_location'];
+
                 ?>
               <div class="row"  id="checked-in">
                 <div class="col-lg-12 mb-4 order-0">    
@@ -207,10 +175,16 @@
                             <p class="mb-4">
                               Kamu telah berhasil check in dengan detil berikut! Jangan lupa untuk selalu terapkan AKHLAK dalam bekerja 🔥🔥🔥
                             </p>
-                            <i class="bx bx-time bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $tanggalAbsenCard ?>, <?php echo $checkinTimeCard ?> WIB</span> <br>
+                            <i class="bx bx-time bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $checkinTimeCard ?> WIB</span> <br>
                             <i class="bx bx-map bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkin_time"> <?php echo $checkinLocationCard ?></span><br>
                             <span id="notif-status-nda"></span><br>
-                          <button id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
+                            <form id="form-check-out" action="proses-check-out.php" method="POST">
+                              <input type="hidden" id="lokasi_check_out" name="lokasi_check_out">
+                              <input type="hidden" id="longitude_check_out" name="longitude_check_out">
+                              <input type="hidden" id="latitude_check_out" name="latitude_check_out">
+
+                              <button type="button" id="button-check-out" class="btn btn-sm btn-primary" onclick="confirmCheckOut()">Check Out</button>
+                            </form>
                         </div>
                       </div>
                       <div class="col-sm-2 text-center text-sm-left">
@@ -228,8 +202,51 @@
                   </div>
                   </div>
                   </div>
-              
-                  
+                  <?php
+                  $sqlTableAbsensiCard = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
+                  $dataTableAbsensiCard = mysqli_fetch_array($sqlTableAbsensiCard);
+                  $checkoutTimeCard = $dataTableAbsensiCard['check_out'];
+                  $checkoutLocationCard = $dataTableAbsensiCard['check_out_location'];
+
+                ?>
+              <div class="row"  id="checked-out">
+                <div class="col-lg-12 mb-4 order-0">    
+                  <div class="card">
+                    <div class="d-flex align-items-end row">
+                      <div class="col-sm-8">
+                        <div class="card-body">
+                          <h4 class="card-title text-primary">Checked Out! ✅</h4>
+                            <div id="checked-out-msg-1">
+                              <p class="mb-4">
+                                Kamu telah berhasil check out dengan detil berikut! Selamat beristirahat 🛌
+                              </p>
+                              <i class="bx bx-time bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkout_time"> <?php echo $checkoutTimeCard ?> WIB</span> <br>
+                              <i class="bx bx-map bx-sm" style="color:#63adf7"></i><span class="fw-bold" id="checkout_location"> <?php echo $checkoutLocationCard ?></span><br>
+                              <span id="notif-status-nda"></span><br></div>
+                            
+                            <div id="checked-out-msg-2">
+                              <p class="mb-4">
+                                Kamu telah check out otomatis oleh sistem! Selamat beristirahat 🛌
+                              </p><br></div>  
+
+                            
+                        </div>
+                      </div>
+                      <div class="col-sm-2 text-center text-sm-left">
+                        <div class="card-body pb-0 px-0 px-md-4">
+                          <img
+                            src="assets/img/illustrations/company-life-jmto.png"
+                            height="200"
+                            alt="View Badge User"
+                            data-app-dark-img="illustrations/company-life-jmto.png"
+                            data-app-light-img="illustrations/company-life-jmto.png"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  </div>
 
               <div class="row"  id="card-check-in">
                 <div class="col-lg-12 mb-4 order-0">
@@ -238,7 +255,6 @@
                       <div class="col-sm-8">
                         <div class="card-body">
                           <h4 class="card-title text-primary">Check In Kehadiran</h4>
-                          
                           <form id="form-check-in" action="proses-check-in.php" method="POST">
                           <div class="row mb-3">
                               <label class="col-sm-4 col-form-label" for="nama_lengkap_karyawan">Nama Lengkap</label>
@@ -275,6 +291,28 @@
                                   >
                               </div>
                             </div>
+                            <div class="row mb-3" style="display:none">
+                              <label class="col-sm-4 col-form-label" for="longitude-check-in">Longitude</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="longitude-check-in"
+                                    name="longitude-check-in"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                            </div>
+                            <div class="row mb-3" style="display:none">
+                              <label class="col-sm-4 col-form-label" for="latitude-check-in">Latitude</label>
+                              <div class="col-sm-8">
+                                  <input type="text" 
+                                    id="latitude-check-in"
+                                    name="latitude-check-in"
+                                    class="form-control"
+                                    readonly
+                                  >
+                              </div>
+                            </div>
                             <div class="row mb-3">
                               <label class="col-sm-4 col-form-label" for="basic-default-name">Operasional/Non-Operasional</label>
                               <div class="col-sm-8" onclick="check_display_operasional()" required>
@@ -284,24 +322,36 @@
                                 <label for="non-operasional">Non Operasional</label><br>
                               </div>
                             </div>
+
+                            <?php
+                                  $jadwalShift = mysql_query("select * from absen_jadwal");
+                                  $arrayShift = [];
+                                  while ($jadwalShiftFetch = mysqli_fetch_array($jadwalShift)){
+                                    $arrayCurrentShift = [];
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['code']);
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['start']);
+                                    array_push($arrayCurrentShift, $jadwalShiftFetch['end']);
+                                    array_push($arrayShift, $arrayCurrentShift);
+                                  }
+                            ?>
                             <div class="row mb-3" id="display_shift">
                               <label class="col-sm-4 col-form-label" for="basic-default-name">Jadwal Shift</label>
                               <div class="col-sm-8">
                                 <select class="form-control" id="jadwal_shift" name="jadwal_shift" required>
-                                  <option value="" selected>Pilih Shift</option>
-                                  <option value="Shift 1">Shift 1</option>
-                                  <option value="Shift 2">Shift 2</option>
-                                  <option value="Shift 3">Shift 3</option>
+                                  <option value="" disabled selected>Pilih Shift</option>
+                                  <option value="<?php echo $arrayShift[1][1] ?>" id="shift_1" >Shift 1</option>
+                                  <option value="<?php echo $arrayShift[2][1] ?>" id="shift_2" >Shift 2</option>
+                                  <option value="<?php echo $arrayShift[3][1] ?>" id="shift_3">Shift 3</option>
                                 </select>
                               </div>
                             </div>
-                            <div class="row mb-3" id="display_wfo_wfh">
-                              <label class="col-sm-4 col-form-label" for="basic-default-name">WFO/WFH</label>
+                            <div class="row mb-3" id="display_wfo_wfa">
+                              <label class="col-sm-4 col-form-label" for="basic-default-name">WFO/WFA</label>
                               <div class="col-sm-8">
-                              <input type="radio" id="wfo" name="wfo_wfh" value="wfo">
+                              <input type="radio" id="wfo" name="wfo_wfa" value="wfo">
                               <label for="wfo">WFO</label><br>
-                              <input type="radio" id="wfh" name="wfo_wfh" value="wfh">
-                              <label for="wfh">WFH</label>
+                              <input type="radio" id="wfa" name="wfo_wfa" value="wfa">
+                              <label for="wfa">WFA</label>
                               </div>
                             </div>
                             <div class="row mb-3">
@@ -326,7 +376,28 @@
                                   >
                               </div>
                             </div>
-
+                            <div class="modal fade" id="modal-terlambat" aria-labelledby="modalToggleLabel" tabindex="-1" style="display: none" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <div class="modal-title"><h5>Anda Terlambat.</h5></div>
+                      </div>
+                        <div class="modal-body">
+                          <div class="row mb-3">
+                              <label  for="alasan_terlambat">Jelaskan alasan keterlambatan anda!</label>
+                              <div >
+                                <textarea name="alasan_terlambat" id="alasan_terlambat" class="form-control" maxlength="255"></textarea>
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-primary" onclick="kirim_alasan()">Kirim</button>
+                            </div>
+                        
+                          
+                          </div>
+                        </div>
+                    </div>
+                </div>
                             <div class="row justify-content-end">
                               <div class="col-sm-10">
                               </div>
@@ -379,25 +450,31 @@
                   </thead>
                   <tbody class="table-border-bottom-0">
                     <?php
-                    $sqlTableAbsensi = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 7");
+                    $sqlTableAbsensi = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 7");
                     
                     $counter = 1;
-                    // $dataTableAbsensiForOther = mysqli_fetch_array($sqlTableAbsensi);
                     while ($dataTableAbsensi = mysqli_fetch_array($sqlTableAbsensi)){
 
                       echo "<tr style='text-align:center'>";
 
                         echo "<td><i class='fab fa-angular fa-lg text-danger me-3'></i> <strong>".$counter."</strong></td>";
-                        echo "<td>".$dataTableAbsensi['tgl_absence']."</td>";
-                        echo "<td>".$dataTableAbsensi['lokasi_kerja']."</td>";
+                        echo "<td>".$dataTableAbsensi['date_absence']."</td>";
+                        echo "<td>".$dataTableAbsensi['location_work']."</td>";
                         echo "<td>".$dataTableAbsensi['shift']."</td>";
-                        echo "<td><span class='badge bg-label-primary me-1'>".$dataTableAbsensi['checkin_time']." WIB</span></td>";
-                        echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['checkout_time']." WIB</span></td>";
+                        echo "<td><span class='badge bg-label-primary me-1'>".$dataTableAbsensi['check_in']." WIB</span></td>";
                       
                         $statusCheckin = $dataTableAbsensi['status_checkin'];
                         if ($statusCheckin==1){
-                          echo "<td>Sudah checkout</td>";
+                          if ($dataTableAbsensi['check_out']==null){
+                            echo "<td><span class='badge bg-label-danger me-1'>-</span></td>";
+                            echo "<td>Tidak checkout</td>";
+                          }else{
+                            echo "<td><span class='badge bg-label-danger me-1'>".$dataTableAbsensi['check_out']." WIB</span></td>";
+                            echo "<td>Sudah checkout</td>";
+                          }
+                          
                         }else{
+                          echo "<td><span class='badge bg-label-danger me-1'>-</span></td>";
                           echo "<td>Masih checkin</td>";
                         }
 
@@ -422,13 +499,15 @@
                       <div class="modal-header">
                         <div class="modal-title"><h5>SCAN BARCODE</h5></div>
                       </div>
-                        <div class="modal-body">
-                          <div style="width: 500px" id="qr-reader"></div>
-                         
+                      <div class="modal-body">
+                          <center><div style="width: auto" id="qr-reader" type="hidden"></div>
+                          <button class="btn-sm btn-primary" type="button" id="start-camera" onclick="startCamera()">Scan QR</button>
+                          </center>
                           </div>
                         </div>
                     </div>
                 </div>
+                
 </html>
             <script type="text/javascript">
                
@@ -443,24 +522,7 @@
                   , IT Jasa Marga Tollroad Operator
                   <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
                 </div>
-                <div>
-                  <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
-                  <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
-
-                  <a
-                    href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Documentation</a
-                  >
-
-                  <a
-                    href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                    target="_blank"
-                    class="footer-link me-4"
-                    >Support</a
-                  >
-                </div>
+                
               </div>
             </footer>
             <!-- / Footer -->
@@ -478,20 +540,38 @@
 
     <!-- //PHP untuk card, ambil data dari database -->
     <?php
-      $sqlTableAbsensiLast = mysql_query("select * from absensi_checkin where nik='$nik' order by absensi_id desc limit 1");
+      $sqlTableAbsensiLast = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
       $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
-      $statusCheckin = $dataTableAbsensiLast['status_checkin'];
+      $timeDifferent = null;
+      if ($dataTableAbsensiLast['id']==null){
+        $statusCheckin = 1;
+      }else{
+        $statusCheckin = $dataTableAbsensiLast['status_checkin'];
+
+        //time calculate
+        $timestampData = strtotime($dataTableAbsensiLast['check_in']);
+        $timestampNow = strtotime("now");
+        $timeDifferent = $timestampNow-$timestampData;
+        
+        $absensiId = $dataTableAbsensiLast['id'];
+        //auto checkout jika lebih dari 12 jam
+        if ($timeDifferent>=21600){
+          mysql_query("UPDATE trx_absensi SET status_checkin=1 WHERE id='$absensiId'");
+        }
+      }
+      
+    ?>
+
+    <?php
+      $sqlTableAbsensiForTime = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
+      $dataTableAbsensiForTime = mysqli_fetch_array($sqlTableAbsensiForTime);
+
+      $timeData = strtotime($dataTableAbsensiForTime['check_in']);
+      $timeCurrent = strtotime("now");
+      $timeBeda = $timeCurrent-$timeData;
+      // echo $timeBeda;
     ?>
     <!-- / Layout wrapper -->
-
-    <!-- <div class="buy-now">
-      <a
-        href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-        target="_blank"
-        class="btn btn-danger btn-buy-now"
-        >Upgrade to Pro</a
-      >
-    </div> -->
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
@@ -516,17 +596,41 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     
     <script type="text/javascript">
-
         var status_checkin = "<?php echo $statusCheckin; ?>";
-        // console.log(status_checkin);
-        if (status_checkin == 1){
-          document.getElementById("checked-in").style.display = "none";
-          document.getElementById("card-check-in").style.display = "show";
-          document.getElementById("rejected-check-in").style.display = "none";
-        } else{
+        var cekDataLast = "<?php echo $dataTableAbsensiLast['id']; ?>";
+        if (status_checkin==0){
           document.getElementById("checked-in").style.display = "show";
           document.getElementById("card-check-in").style.display = "none";
-          document.getElementById("rejected-check-in").style.display = "none";
+          document.getElementById("checked-out").style.display = "none";
+          
+        } else{
+          if(!cekDataLast){
+            document.getElementById("checked-in").style.display = "none";
+            document.getElementById("card-check-in").style.display = "show";
+              document.getElementById("checked-out").style.display = "none";
+          }else{
+            var timeBedaJ = "<?php echo $timeBeda; ?>";
+            var checkOutTime = "<?php echo $dataTableAbsensiForTime['check_out'] ?>"
+            if (timeBedaJ<=79200){
+              //kalau misalkan waktunya belum 22 jam
+              document.getElementById("checked-in").style.display = "none";
+              document.getElementById("card-check-in").style.display = "none";
+                  document.getElementById("checked-out").style.display = "show";
+              if (!checkOutTime){
+                document.getElementById("checked-out-msg-1").style.display = "none";
+                document.getElementById("checked-out-msg-2").style.display = "show";
+              }
+              else{
+                document.getElementById("checked-out-msg-1").style.display = "show";
+                document.getElementById("checked-out-msg-2").style.display = "none";
+              }
+            }else{
+              //kalau sudah lebih 22 jam
+              document.getElementById("checked-in").style.display = "none";
+              document.getElementById("card-check-in").style.display = "show";
+                  document.getElementById("checked-out").style.display = "none";
+            }
+          }          
         }
         
 
@@ -536,16 +640,16 @@
           function check_display_operasional(){
             if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
               //Karyawan Operasional, menampilkan radio button shift
-              document.getElementById('display_wfo_wfh').style = "display:none";
+              document.getElementById('display_wfo_wfa').style = "display:none";
               document.getElementById('display_shift').style = "display:show";
-              document.getElementById('display_wfo_wfh').required = false;
+              document.getElementById('display_wfo_wfa').required = false;
               document.getElementById('display_shift').required = true;
 
             }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
-              //Karyawan Non Operasional, menampilkan radio button wfo/wfh
-              document.getElementById('display_wfo_wfh').style = "display:show";
+              //Karyawan Non Operasional, menampilkan radio button wfo/wfa
+              document.getElementById('display_wfo_wfa').style = "display:show";
               document.getElementById('display_shift').style = "display:none";
-              document.getElementById('display_wfo_wfh').required = true;
+              document.getElementById('display_wfo_wfa').required = true;
               document.getElementById('display_shift').required = false;
             }
           }
@@ -554,27 +658,92 @@
             if(document.getElementById('operasional').checked == true && document.getElementById('non-operasional').checked == false){
               //Karyawan operasional, munculin modal scanner
               if(document.getElementById('jadwal_shift').value !== ""){
-                  $('#modal-check-in').modal('show'); 
+                  var todaywib = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                  var today = new Date(todaywib);
+                  var jadwal_check_in = new Date();
+                  var jadwal_pilihan = document.getElementById('jadwal_shift').value;
+                  var array = jadwal_pilihan.split(':');
+                  jadwal_check_in.setHours(array[0],array[1]);
+                  var selisih = today.getTime()-jadwal_check_in.getTime();
+                  selisih1 = selisih/(1000*60*60);
+                  if(selisih>0){
+                    $('#modal-terlambat').modal('show'); 
+                    document.getElementById("alasan_terlambat").required = true;
+
+                  }else{
+                    $('#modal-check-in').modal('show'); 
+                  }
                 }else{
                   alert('Mohon isi jadwal shift anda!')
                 }
             }else if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
-              if(document.getElementById('wfo').checked == true && document.getElementById('wfh').checked == false ){
+              if(document.getElementById('wfo').checked == true && document.getElementById('wfa').checked == false ){
                 //Karyawan non operasional wfo, munculin modal scanner
-                
-                  $('#modal-check-in').modal('show'); 
-                
+                var todaywib = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                  var today = new Date(todaywib);
+                  var jadwal_check_in = new Date();
+                  var jadwal_pilihan = "08:00";
+                  var array = jadwal_pilihan.split(':');
+                  jadwal_check_in.setHours(array[0],array[1]);
+                  var selisih = today.getTime()-jadwal_check_in.getTime();
+                  selisih1 = selisih/(1000*60*60);
+                  if(selisih>0){
+                    document.getElementById("alasan_terlambat").required = true;
+                    $('#modal-terlambat').modal('show'); 
+                  }else{
+                    document.getElementById("alasan_terlambat").required = false;
+                    $('#modal-check-in').modal('show'); 
+                  }
               }
-              else if(document.getElementById('wfo').checked == false && document.getElementById('wfh').checked == true ){
-                //Karyawan non operasional wfH, langsung submit form
-                console.log('form-check-in-submit');
-                document.getElementById('form-check-in').submit();
+              else if(document.getElementById('wfo').checked == false && document.getElementById('wfa').checked == true ){
+                //Karyawan non operasional wfa, langsung submit form
+                var todaywib = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                  var today = new Date(todaywib);
+                  var jadwal_check_in = new Date();
+                  var jadwal_pilihan = "08:00";
+                  var array = jadwal_pilihan.split(':');
+                  jadwal_check_in.setHours(array[0],array[1]);
+                  var selisih = today.getTime()-jadwal_check_in.getTime();
+                  selisih1 = selisih/(1000*60*60);
+                  navigator.geolocation.getCurrentPosition(function(position) {
+                  var currentPosition = position;
+                  //CALL API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
+                  getApiLocationAddress(currentPosition)});
+                  
+                  if(selisih>0){
+                    document.getElementById("alasan_terlambat").required = true;
+
+                    $('#modal-terlambat').modal('show'); 
+
+                  }else{
+                    document.getElementById("alasan_terlambat").required = false;
+
+                    document.getElementById('form-check-in').submit();
+                  }
               }
-            
             }else{
               alert('Mohon isi status karyawan operasional/non');
             }
           }
+        function kirim_alasan(){
+          if(document.getElementById('alasan_terlambat').value.length > 0){
+            if(document.getElementById('operasional').checked == false && document.getElementById('non-operasional').checked == true){
+              if(document.getElementById('wfo').checked == false && document.getElementById('wfa').checked == true ){
+                document.getElementById("alasan_terlambat").required = false;
+                document.getElementById('form-check-in').submit();
+              }else{
+                document.getElementById("alasan_terlambat").required = true;
+                $('#modal-check-in').modal('show');
+              }
+            }else{
+              document.getElementById("alasan_terlambat").required = true;
+              $('#modal-check-in').modal('show');
+            }
+          }else{
+            alert('Mohon isi alasan keterlambatan anda!');
+          }
+          
+        }
         function getApiLocationAddress(currentPosition) {
           //URL API
           var bdcApi = "https://api.bigdatacloud.net/data/reverse-geocode-client";
@@ -586,10 +755,10 @@
                     + "&longitude=" + position.coords.longitude
                     + "&localityLanguage=id";
                     getApi(bdcApi);
-                    
-              // document.getElementById('lat_perangkat').value = currentPosition.coords.latitude;
-              // document.getElementById('long_perangkat').value = currentPosition.coords.longitude;
-
+                    document.getElementById('longitude_check_out').value = position.coords.longitude;
+                    document.getElementById('latitude_check_out').value = position.coords.latitude;
+                    document.getElementById('longitude-check-in').value = position.coords.longitude;
+                    document.getElementById('latitude-check-in').value = position.coords.latitude;
             },
             (err) => { getApi(bdcApi); },
             {
@@ -624,6 +793,8 @@
 
               //return to view
               document.getElementById('lokasi_perangkat').innerHTML = arrayAddressFinal.join(", ");
+              document.getElementById('lokasi_check_out').value = arrayAddressFinal.join(", ");
+
                   }
               };
             }
@@ -631,7 +802,7 @@
           function getDate(){
             var today = new Date();
             var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth()); //January is 0!
+            var mm = String(today.getMonth());
             var yyyy = today.getFullYear();
             const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
               "Juli", "Agustus", "September", "Oktober", "November", "Desember"
@@ -639,15 +810,62 @@
             today = dd + ' ' + monthNames[mm] + ' ' + yyyy;
             document.getElementById('tanggal-check-in').value = today;
           }
+
           $(document).ready(function(){
             // we call the function
             
             getDate();
             getApiLocationAddress();
 
-            document.getElementById('display_wfo_wfh').style = "display:none";
+            document.getElementById('display_wfo_wfa').style = "display:none";
             document.getElementById('display_shift').style = "display:none";
+            $('#modal-terlambat').modal({backdrop: 'static', keyboard: false})  ;
+            $('#modal-check-in').modal({backdrop: 'static', keyboard: false})  ;
             
+            //Hide shift
+            var shift_1 = '<?php echo $arrayShift[1][2]?>'; 
+            var shift_2 = '<?php echo $arrayShift[2][2]?>'; 
+            var shift_3 = '<?php echo $arrayShift[3][2]?>';
+            var date_now = new Date();
+
+             
+            var date_shift_1 = new Date();
+            var date_shift_2 = new Date();
+            var date_shift_3 = new Date();
+
+
+            var check_out_shift_1 = shift_1.split(':');
+            var check_out_shift_2 = shift_2.split(':');
+            var check_out_shift_3 = shift_3.split(':');
+
+            date_shift_1.setHours(check_out_shift_1[0],check_out_shift_1[1]);
+            date_shift_2.setHours(check_out_shift_2[0],check_out_shift_2[1]);
+            date_shift_3.setHours(check_out_shift_3[0],check_out_shift_3[1]);
+
+            var selisih_1 = date_now.getTime()-date_shift_1.getTime();
+            selisih1 = selisih_1/(1000*60*60);
+            var selisih_2 = date_now.getTime()-date_shift_2.getTime();
+            selisih2 = selisih_2/(1000*60*60);
+            var selisih_3 = date_now.getTime()-date_shift_3.getTime();
+            selisih3 = selisih_3/(1000*60*60);
+
+            if(selisih_1 > 0){
+              document.getElementById("shift_1").hidden = true;
+            }else{
+              document.getElementById("shift_1").hidden = false;
+            }
+            
+            if(selisih_2 > 0){
+              document.getElementById("shift_2").hidden = true;
+            }else{
+              document.getElementById("shift_2").hidden = false;
+            }
+            
+            if(selisih_3 > 0){
+              document.getElementById("shift_3").hidden = true;
+            }else{
+              document.getElementById("shift_3").hidden = false;
+            }
             
           });
 
@@ -663,33 +881,43 @@
           var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(strDecodedText[0])) * Math.sin(dLong/2) * Math.sin(dLong/2); 
           var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
           var resultFinal = radius * c; // Distance in km
-          //document.getElementById('selisih').value = resultFinal;
           console.log(resultFinal);
-          if(resultFinal <= 2){
+          document.getElementById('longitude-check-in').value = long1;
+          document.getElementById('latitude-check-in').value = lat1;
+          document.getElementById('longitude_check_out').value = long1;
+          document.getElementById('latitude_check_out').value = lat1;
+          if(resultFinal <= 100){
             document.getElementById('form-check-in').submit();
-          }else if (resultFinal > 2){
+          }else if (resultFinal > 100){
             $('#modal-check-in').modal('hide'); 
+            $('#modal-terlambat').modal('hide'); 
+
             Swal.fire({
               type: 'error',
               title: 'Check in gagal!',
               text: 'Lokasi anda terdeteksi tidak dalam area kantor.',
-              showConfirmButton: true
-            })
-            document.getElementById('form-check-in').reset();
-            getDate();
-
-
+              showConfirmButton: true,
+              allowOutsideClick: false,
+              confirmButtonText: 'Coba lagi',
+            }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+                if (result['value']==true) {
+                  location.replace('dashboard-absensi.php');
+                }
+            });
           }
+          
+
         }
         function deg2rad(deg) {
           return deg * (Math.PI/180)
         }
 
         //scanner function (UTAMA)
-        function onScanSuccess(decodedText, decodedResult) {
-            console.log(`Code scanned = ${decodedText}`, decodedResult);
-          
-          navigator.geolocation.getCurrentPosition(function(position) {
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+            /* handle success */
+            navigator.geolocation.getCurrentPosition(function(position) {
             var currentPosition = position;
             //CALL API LOCATION ADDRESS DEVICE + LATITUDE DEVICE + LONGITUDE DEVICE
             getApiLocationAddress(currentPosition);
@@ -697,21 +925,24 @@
             //SPLIT RESULT READ QR
             let strDecodedText = decodedText;
             strDecodedText = strDecodedText.split(";");
-            // document.getElementById('lat_kantor').value = strDecodedText[0];
-            // document.getElementById('long_kantor').value = strDecodedText[1];
             document.getElementById('nama_kantor').value = strDecodedText[2];
             //CALCULATE DISTANCE DEVICE WITH QR (SELISIH)
-            calculateDistance(currentPosition, strDecodedText);
+            calculateDistance(currentPosition, strDecodedText);});
+            console.log(`Code scanned = ${decodedText}`,decodedResult);
+            html5QrCode.stop().then((ignore) => {}).catch((err) => {});};
+        const configqr = { fps: 10 };
 
-            html5QrcodeScanner.clear();
-          });
+        function startCamera(){
+        document.getElementById("qr-reader").style.display="show";
+        document.getElementById("start-camera").style.display="none";
+        Html5Qrcode.getCameras().then(devices => {
+        if (devices && devices.length) {
+            cameraId = devices[0].id;}
+        }).catch(err => {
+        });
+        html5QrCode.start({ facingMode: "environment" }, configqr, qrCodeSuccessCallback);}
 
-        }
-
-        var html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250});
-        html5QrcodeScanner.render(onScanSuccess);
         function confirmCheckOut(){
-          
           Swal.fire({
               title: "Apakah anda yakin?",
               text: "Anda akan check out dari kantor",
@@ -723,7 +954,7 @@
             console.log(result);
             /* Read more about isConfirmed, isDenied below */
             if (result['value']==true) {
-              window.location.replace("/mydata/modul/absensi-dev/proses-check-out.php");
+              document.getElementById('form-check-out').submit();
               Swal.fire('Checked Out!', '', 'success')
             }
           })
