@@ -34,6 +34,6 @@
       
     }
     $ex = mysql_query($query);
-    header("location: /mydata-trx/modul/absensi-dev/qrcode-gen/qrcode-generator.php");
+    header("location: /mydata/modul/absen-dev/qrcode-gen/qrcode-generator.php");
     ?>	
 

@@ -221,8 +221,8 @@
                           <h4 class="card-title text-primary">Check In Kehadiran</h4>
                           <?php 
                                 $sql = "SELECT * FROM karyawan WHERE nik   = '152701'";
-                                $query = mysqli_query($db, $sql); 
-                                $karyawan = mysqli_fetch_array($query)
+                                $query = mysql_query($db, $sql); 
+                                $karyawan = mysql_fetch_array($query)
                           ?>
                           <form id="form-check-in" action="proses-check-in.php" method="POST">
                           <div class="row mb-3">

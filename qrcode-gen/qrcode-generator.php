@@ -165,7 +165,7 @@
                           <h4 class="card-title text-primary">Data QR Code</h4>
                           <?php
                           $sqlTableQRCodeLast = mysql_query("select * from saved_qrcode_list order by qr_id desc limit 1");
-                          $dataTableQRCodeLast = mysqli_fetch_array($sqlTableQRCodeLast);
+                          $dataTableQRCodeLast = mysql_fetch_array($sqlTableQRCodeLast);
                           ?>
                           <form id="form-qrcode-generator" action="proses-save-qrcode.php" method="POST">
                           <div class="row mb-3">
@@ -266,7 +266,7 @@
                   $sqlTableQRCode = mysql_query("select * from saved_qrcode_list order by tanggal desc");
 
                   $counter = 1;
-                  while ($dataTableQRCode = mysqli_fetch_array($sqlTableQRCode)){
+                  while ($dataTableQRCode = mysql_fetch_array($sqlTableQRCode)){
 
                     echo "<tr style='text-align:center'>"; 
                     echo "<td><i class='fab fa-angular fa-lg text-danger me-3'></i>".$counter."</td>";

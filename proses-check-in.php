@@ -25,7 +25,7 @@
 
     $jadwalShift = mysql_query("select * from absen_jadwal");
     $arrayShift = [];
-    while ($jadwalShiftFetch = mysqli_fetch_array($jadwalShift)){
+    while ($jadwalShiftFetch = mysql_fetch_array($jadwalShift)){
       $arrayCurrentShift = [];
       array_push($arrayCurrentShift, $jadwalShiftFetch['code']);
       array_push($arrayCurrentShift, $jadwalShiftFetch['start']);
@@ -76,7 +76,7 @@
     $status_checkin = 0;
     $reason = null;
     $notes = null;
-    $status_attendance = 1;
+    $status_attendance = "Hadir";
 
     //new variable
     $nominal = null;
@@ -263,5 +263,5 @@
       }
     }
   $ex = mysql_query($query);
-  header("location: /mydata-trx/modul/absensi-dev/dashboard-absensi.php");	
+  header("location: /mydata/modul/absen-dev/dashboard-absensi.php");	
 ?>

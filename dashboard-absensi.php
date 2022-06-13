@@ -160,7 +160,7 @@
 
                 <?php
                   $sqlTableAbsensiCard = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
-                  $dataTableAbsensiCard = mysqli_fetch_array($sqlTableAbsensiCard);
+                  $dataTableAbsensiCard = mysql_fetch_array($sqlTableAbsensiCard);
                   $checkinTimeCard = $dataTableAbsensiCard['check_in'];
                   $checkinLocationCard = $dataTableAbsensiCard['check_in_location'];
 
@@ -204,7 +204,7 @@
                   </div>
                   <?php
                   $sqlTableAbsensiCard = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
-                  $dataTableAbsensiCard = mysqli_fetch_array($sqlTableAbsensiCard);
+                  $dataTableAbsensiCard = mysql_fetch_array($sqlTableAbsensiCard);
                   $checkoutTimeCard = $dataTableAbsensiCard['check_out'];
                   $checkoutLocationCard = $dataTableAbsensiCard['check_out_location'];
 
@@ -326,7 +326,7 @@
                             <?php
                                   $jadwalShift = mysql_query("select * from absen_jadwal");
                                   $arrayShift = [];
-                                  while ($jadwalShiftFetch = mysqli_fetch_array($jadwalShift)){
+                                  while ($jadwalShiftFetch = mysql_fetch_array($jadwalShift)){
                                     $arrayCurrentShift = [];
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['code']);
                                     array_push($arrayCurrentShift, $jadwalShiftFetch['start']);
@@ -453,7 +453,7 @@
                     $sqlTableAbsensi = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 7");
                     
                     $counter = 1;
-                    while ($dataTableAbsensi = mysqli_fetch_array($sqlTableAbsensi)){
+                    while ($dataTableAbsensi = mysql_fetch_array($sqlTableAbsensi)){
 
                       echo "<tr style='text-align:center'>";
 
@@ -541,7 +541,7 @@
     <!-- //PHP untuk card, ambil data dari database -->
     <?php
       $sqlTableAbsensiLast = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
-      $dataTableAbsensiLast = mysqli_fetch_array($sqlTableAbsensiLast);
+      $dataTableAbsensiLast = mysql_fetch_array($sqlTableAbsensiLast);
       $timeDifferent = null;
       if ($dataTableAbsensiLast['id']==null){
         $statusCheckin = 1;
@@ -564,7 +564,7 @@
 
     <?php
       $sqlTableAbsensiForTime = mysql_query("select * from trx_absensi where nik='$nik' order by id desc limit 1");
-      $dataTableAbsensiForTime = mysqli_fetch_array($sqlTableAbsensiForTime);
+      $dataTableAbsensiForTime = mysql_fetch_array($sqlTableAbsensiForTime);
 
       $timeData = strtotime($dataTableAbsensiForTime['check_in']);
       $timeCurrent = strtotime("now");

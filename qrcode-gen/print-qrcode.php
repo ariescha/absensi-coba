@@ -166,7 +166,7 @@
                         $id_qr = $_GET['id'];
                         $sqlTableQRCode = mysql_query("select * from saved_qrcode_list where qr_id='$id_qr'");
 
-                        $dataTableQRCode = mysqli_fetch_array($sqlTableQRCode); ?>
+                        $dataTableQRCode = mysql_fetch_array($sqlTableQRCode); ?>
                         <div class="card-body">
                             <div class="card-title">
                                 <center>
